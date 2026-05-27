@@ -1,0 +1,41 @@
+Component: Infinite Moving Images (Marquee)
+Forrás stílus: Aceternity UI / Magic UI / 21st.dev
+Mire jó: Folyamatosan, végtelenül oldalra mozgó képsor — ideális "kedvenceim" / "legutóbbi munkák" csíknak az oldal aljára vagy két szekció közé.
+
+Függőségek:
+- React
+- Tailwind CSS
+- A Tailwind config-ban definiált scroll keyframes
+
+PROMPT:
+
+Build an "Infinite Moving Cards" component for images, with a CSS-only infinite loop.
+- Container: overflow-hidden, mask-image gradient on left/right edges so the images fade into the background (mask-image: linear-gradient(to right, transparent, black 10%, black 90%, transparent)).
+- Inside, a flex row that contains the image array TWICE (so when the first set scrolls out, the second is already in view → seamless).
+- Apply Tailwind class `animate-scroll` that uses a CSS @keyframes scroll: from { transform: translateX(0) } to { transform: translateX(-50%) }.
+- Add the keyframes to tailwind.config.js under theme.extend.animation and theme.extend.keyframes.
+- Props:
+  - direction: "left" | "right" (default "left") — flip the animation direction with animation-direction: reverse.
+  - speed: "slow" | "normal" | "fast" → maps to 60s / 40s / 20s animation-duration via inline style.
+  - pauseOnHover: boolean (default true) → hover:[animation-play-state:paused].
+- Each image: w-[300px] h-[200px] object-cover rounded-xl, gap-4 between them.
+- Optional caption below the image (small text-neutral-400).
+
+Files:
+- components/ui/infinite-moving-images.tsx
+- tailwind.config.js (extend with the keyframes)
+
+Tailwind extend:
+animation: { scroll: "scroll var(--duration) linear infinite" }
+keyframes: { scroll: { to: { transform: "translateX(calc(-50% - 0.5rem))" } } }
+
+Usage:
+<InfiniteMovingImages
+  images={[
+    { src: "/img/a.jpg", caption: "Anyák Napja" },
+    { src: "/img/b.jpg", caption: "Falco" },
+    ...
+  ]}
+  direction="left"
+  speed="slow"
+/>

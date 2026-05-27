@@ -1,0 +1,39 @@
+Component: Animated Hover Gallery (Layout Grid)
+Forrás stílus: Aceternity UI / 21st.dev
+Mire jó: Fix rácsos galéria, ahol a képre kattintva a kép kinagyul a középre (layoutId animation), és körülötte részletes leírás jelenik meg. Album-előnézethez vagy kiemelt képekhez tökéletes.
+
+Függőségek:
+- React
+- Tailwind CSS
+- framer-motion
+- clsx vagy tailwind-merge
+
+PROMPT:
+
+Build a "Layout Grid" component with shared layout animations.
+- Renders a grid of cards (grid-cols-1 md:grid-cols-3 grid-rows-3 gap-4 max-w-7xl mx-auto h-[80vh]).
+- Each card has a `className` for span (e.g. "md:col-span-2", "md:row-span-2") and an image background (object-cover absolute inset-0).
+- Click on a card: the card animates with framer-motion `layoutId` to a centered modal size (w-[90vw] h-[90vh] md:w-[60vw] md:h-[80vh]), with the rest of the page covered by a dimmed overlay (bg-black/50 backdrop-blur-md, fade in).
+- Inside the expanded view: the image stays as background, and below shimmers in a content block (title, paragraph, link).
+- Click outside the expanded card → it animates back to its original grid position (smooth shared element transition).
+- Press ESC to close.
+- Use `motion.div` with `layoutId={card.id}` on both the small and expanded versions; framer-motion handles the FLIP animation.
+- Track `selected` card in state.
+- Tailwind: cards have rounded-xl overflow-hidden cursor-pointer, hover:scale-[1.02] transition-transform.
+
+File: components/ui/layout-grid.tsx
+
+Card type:
+type Card = {
+  id: number;
+  className: string;          // grid spans
+  thumbnail: string;          // image src
+  content: React.ReactNode;   // shown when expanded
+};
+
+Usage:
+<LayoutGrid cards={[
+  { id: 1, className: "md:col-span-2", thumbnail: "/img/falco.jpg", content: <p>Falco kézi…</p> },
+  { id: 2, className: "col-span-1", thumbnail: "/img/viztorony.jpg", content: <p>Víztorony Nyugat</p> },
+  ...
+]} />

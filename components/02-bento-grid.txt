@@ -1,0 +1,35 @@
+Component: Bento Grid
+Forrás stílus: Magic UI / Aceternity UI / 21st.dev
+Mire jó: Főoldal projekt-bemutató rács. Vegyes méretű cellák (1x1, 2x1, 2x2) — minden cella egy fotó-album / esemény (Majális, Ballagás, Kéziatléta stb.). Modern, Apple-szerű hatás.
+
+Függőségek:
+- Next.js / React
+- Tailwind CSS
+- framer-motion (opcionális — hover animációhoz)
+- lucide-react (ikonokhoz)
+
+PROMPT:
+
+Build a "Bento Grid" component for a photography portfolio homepage.
+- Use CSS Grid with grid-cols-3 on md+ and grid-cols-1 on mobile, auto-rows-[20rem], gap-4.
+- Each `BentoGridItem` accepts: title, description, header (a React node — usually an image or a small preview), icon, and optional className for spans (e.g. "md:col-span-2", "md:row-span-2").
+- The header takes ~70% of the cell height; below it shows the icon, title (font-semibold), and description (text-neutral-500, text-sm).
+- On hover: scale the inner image to 1.05 with a 300ms transition, fade in a dark gradient overlay, slide the title up slightly.
+- Cell background: bg-white dark:bg-neutral-900, border border-neutral-200 dark:border-neutral-800, rounded-xl, shadow-sm hover:shadow-xl.
+- Make at least 7 cells with photo album previews. Vary the spans so the layout is asymmetric.
+- The `header` prop should default to a placeholder image filling the area with object-cover.
+
+Files:
+- components/ui/bento-grid.tsx (BentoGrid, BentoGridItem)
+- components/sections/portfolio-bento.tsx (the populated grid using your real album data)
+
+Usage:
+<BentoGrid>
+  <BentoGridItem
+    title="Majális Éjszaka"
+    description="Éjszakai utcafotók, hosszú expozíció"
+    header={<img src="/img/majalis-night.jpg" className="w-full h-full object-cover" />}
+    icon={<Camera className="h-4 w-4" />}
+    className="md:col-span-2"
+  />
+</BentoGrid>

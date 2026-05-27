@@ -1,0 +1,45 @@
+Component: 3D Card Effect (Tilt Card)
+Forrás stílus: Aceternity UI / 21st.dev
+Mire jó: Projekt-kártyák egér-mozgatásra 3D-ben dőlnek — a kártyán belüli elemek (cím, kép, gomb) más-más mélységben "lebegnek". Premium érzet.
+
+Függőségek:
+- React
+- Tailwind CSS
+
+PROMPT:
+
+Build a "3D Card" component (no extra libraries — pure React + CSS transforms).
+- Three exported pieces: CardContainer, CardBody, CardItem.
+- CardContainer:
+  - Wraps everything in a perspective: 1000px container.
+  - Tracks mouseMove on the card, calculating rotateX and rotateY from cursor position relative to the card center (max ±15deg).
+  - On mouseLeave resets rotation to 0.
+  - Applies the rotation via inline style transform on CardBody.
+  - Provides a context with the current `mouseEntered` boolean.
+- CardBody:
+  - The actual visual card. Tailwind: relative, group/card, rounded-xl, transform-style-3d, transition-transform duration-200 ease-linear.
+- CardItem:
+  - Reads context. Each item has a `translateZ` prop (number) — when mouseEntered, it gets translateZ(${value}px). When not, translateZ(0).
+  - Optional translateX/Y, rotateX/Y/Z props for fine control.
+  - Renders as any element via `as` prop (default "div").
+- Smooth transitions everywhere (transition-all duration-200 ease-linear).
+
+File: components/ui/3d-card.tsx
+
+Usage (project card):
+<CardContainer>
+  <CardBody className="bg-neutral-900 w-96 h-auto rounded-xl p-6 border">
+    <CardItem translateZ={50} className="text-xl font-bold text-white">
+      Kékséta
+    </CardItem>
+    <CardItem translateZ={60} className="text-sm text-neutral-300 mt-2">
+      Kora reggeli ködös séta
+    </CardItem>
+    <CardItem translateZ={100} className="w-full mt-4">
+      <img src="/img/kekseta.jpg" className="w-full h-60 object-cover rounded-xl" />
+    </CardItem>
+    <CardItem as="a" href="/portfolio/kekseta" translateZ={20} className="mt-4 px-4 py-2 rounded-xl bg-white text-black text-sm">
+      Megnyitás →
+    </CardItem>
+  </CardBody>
+</CardContainer>

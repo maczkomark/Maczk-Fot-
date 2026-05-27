@@ -1,0 +1,31 @@
+Component: Hero Parallax
+Forrás stílus: Aceternity UI / 21st.dev
+Mire jó: Fotós portfolio nyitóoldal — a háttérben több sorban, eltérő sebességgel mozgó képek, miközben a felhasználó görget. Drámai, mozifilmes hatás.
+
+Függőségek:
+- Next.js / React
+- Tailwind CSS
+- framer-motion
+
+PROMPT (másold be Cursor/Claude/v0-ba):
+
+Build a "Hero Parallax" component for a photography portfolio. Requirements:
+- Three horizontal rows of images. The top and bottom rows scroll to the right, the middle row scrolls to the left as the user scrolls down the page.
+- Each image is a card with rounded-xl corners, hover state lifts the card slightly and shows the photo title overlay.
+- Above the parallax rows, a large headline ("Mark | Photography") with subheading and a fade-in animation on mount.
+- Use framer-motion's useScroll and useTransform for the parallax effect. Map scrollYProgress to translateX for each row.
+- Also use translateY and opacity transforms so the headline fades up as the user scrolls.
+- Accept a `products` (or `photos`) prop: `{ title: string, link: string, thumbnail: string }[]`.
+- Split the array into three rows of equal length.
+- Tailwind classes only, no extra CSS files.
+- Make the section h-[300vh] so there is enough scroll room for the parallax.
+- Sticky inner container with overflow-hidden.
+
+File: components/ui/hero-parallax.tsx
+Export: HeroParallax (named export)
+
+Usage example:
+<HeroParallax photos={[
+  { title: "Majális Szombathely", link: "/portfolio/majalis-szhely", thumbnail: "/img/majalis1.jpg" },
+  ...
+]} />

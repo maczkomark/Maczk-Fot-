@@ -1,0 +1,35 @@
+Component: Apple Cards Carousel
+Forrás stílus: Aceternity UI (21st.dev-en is elérhető)
+Mire jó: Vízszintesen görgethető, nagy formátumú kártyák — minden kártya egy projekt/album. Kattintásra a kártya teljesképernyős modalba nyílik részletekkel és galériával. Apple weboldal-érzet.
+
+Függőségek:
+- React
+- Tailwind CSS
+- framer-motion
+- lucide-react
+
+PROMPT:
+
+Build an "Apple Cards Carousel" component.
+- A horizontally scrollable container (overflow-x-scroll, scroll-smooth, snap-x snap-mandatory).
+- Each card: w-[300px] md:w-[450px] h-[400px] md:h-[600px], rounded-3xl, relative, overflow-hidden, snap-center.
+- Card content (z-stacked):
+  1. Background image (object-cover, scale on hover-1.05, transition).
+  2. Gradient overlay from black/60 at top → transparent.
+  3. Top-left: small category label (text-white text-sm font-medium).
+  4. Below it: large title (text-white text-2xl md:text-3xl font-semibold, max-w-xs, leading-tight).
+- Above and below the carousel show prev/next round buttons (h-10 w-10 rounded-full bg-gray-100) that scroll the container by one card width.
+- Track scroll position; disable buttons at start/end.
+- Click on a card opens a full-screen modal (framer-motion layoutId for shared element transition):
+  - The card image expands smoothly to a hero in the modal.
+  - Below: long-form description, author, gallery thumbnails.
+  - Close button top-right; ESC closes.
+  - Lock body scroll while open.
+- Props: `items: { category: string, title: string, src: string, content: ReactNode }[]`.
+- Use a CarouselContext to share `currentIndex` and `onCardClose` between Carousel and Card.
+
+Files:
+- components/ui/apple-cards-carousel.tsx (Carousel, Card)
+
+Usage:
+<Carousel items={portfolioCards.map((c, i) => <Card key={i} card={c} index={i} />)} />

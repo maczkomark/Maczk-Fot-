@@ -1,0 +1,40 @@
+Component: Lightbox / Image Modal
+Forrás stílus: 21st.dev community (yet-another-react-lightbox-stílusú, de saját kód)
+Mire jó: Teljesképernyős kép nézegető — kattintásra megnyílik, balra/jobbra léptethető, ESC-re bezárul. Fotós oldalon kötelező elem.
+
+Függőségek:
+- React
+- Tailwind CSS
+- framer-motion (animációkhoz)
+- lucide-react (ikonokhoz: X, ChevronLeft, ChevronRight)
+
+PROMPT:
+
+Build a Lightbox component with the following features:
+- Renders a fixed inset-0 overlay with bg-black/95 backdrop-blur-sm, z-50.
+- The current image is centered, max-h-[90vh], max-w-[90vw], object-contain.
+- Top-right close button (X icon), top-left counter ("3 / 24"), bottom: image caption.
+- Left and right arrow buttons (large, semi-transparent) for navigation. Hidden on mobile, replaced with swipe gesture.
+- Keyboard controls:
+  - ArrowLeft / ArrowRight → prev / next
+  - Escape → close
+- Touch swipe support (left = next, right = prev). Use simple onTouchStart/onTouchEnd diff.
+- framer-motion AnimatePresence for fade-in/out of the overlay (opacity 0→1, 200ms).
+- Image transition: slide-x with key={currentIndex}, x: 50 → 0, opacity 0 → 1.
+- Lock body scroll while open: document.body.style.overflow = "hidden", restore on close.
+- Preload neighbouring images (i-1 and i+1) via new Image() for instant nav.
+- Props: `images: { src: string, alt: string, title?: string }[]`, `initialIndex: number`, `open: boolean`, `onClose: () => void`.
+
+File: components/ui/lightbox.tsx
+Export: Lightbox
+
+Usage:
+const [open, setOpen] = useState(false);
+const [idx, setIdx] = useState(0);
+
+<Lightbox
+  images={images}
+  initialIndex={idx}
+  open={open}
+  onClose={() => setOpen(false)}
+/>

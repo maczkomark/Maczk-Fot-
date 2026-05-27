@@ -1,0 +1,29 @@
+Component: Masonry Gallery
+Forrás stílus: 21st.dev community
+Mire jó: Egy adott esemény / album oldalán Pinterest-szerű, vegyes magasságú képgaléria. Tökéletes a fotós portfolio belső album oldalaihoz (pl. /portfolio/balogunyom-majalis).
+
+Függőségek:
+- Next.js / React
+- Tailwind CSS
+- next/image (vagy sima img)
+
+PROMPT:
+
+Build a responsive Masonry Gallery component.
+- Use CSS columns: columns-1 sm:columns-2 md:columns-3 lg:columns-4, gap-4.
+- Each image is wrapped in a div with `break-inside-avoid mb-4` so columns flow naturally.
+- Images: rounded-lg, w-full, object-cover, with their natural aspect ratio preserved (no fixed height).
+- On hover: subtle scale-[1.02], brightness-110, and show a small caption pill in the bottom-left corner (image title from the data).
+- Lazy load all images (loading="lazy" + placeholder="blur" if next/image with blurDataURL).
+- Click on an image opens a Lightbox (separate component, see 04-lightbox.txt) — pass the clicked index to the lightbox.
+- Accept prop `images: { src: string, alt: string, title?: string, width: number, height: number }[]`.
+- Smooth fade-in: use IntersectionObserver to add an `opacity-100` class when each image scrolls into view (start opacity-0, transition-opacity duration-700).
+
+File: components/ui/masonry-gallery.tsx
+
+Usage:
+<MasonryGallery images={[
+  { src: "/img/majalis/01.jpg", alt: "Színpad", title: "Színpad", width: 1600, height: 1200 },
+  { src: "/img/majalis/02.jpg", alt: "Tömeg", title: "Tömeg", width: 1200, height: 1600 },
+  ...
+]} />

@@ -1,0 +1,40 @@
+Component: Contact Form with Glow Border
+Forrás stílus: Aceternity UI / 21st.dev
+Mire jó: Kapcsolat oldalra — sötét hátterű űrlap, az inputoknak fókuszra animált fényes szegélye lesz (gradient border, animation: spin). Modern, prémium érzet.
+
+Függőségek:
+- React
+- Tailwind CSS
+- framer-motion (a submit gomb glow-jához)
+- react-hook-form + zod (opcionális, ha validáció kell)
+
+PROMPT:
+
+Build a Contact Form component for a photographer.
+- Layout: max-w-md mx-auto p-8 rounded-2xl bg-black border border-white/10, dark UI.
+- Header: "Vegyél fel a kapcsolatot" title + subtitle "Esküvő, esemény, családi fotózás — írj nekem".
+- Fields:
+  - Név (text)
+  - Email (email)
+  - Esemény típusa (select: Esküvő, Családi, Esemény, Egyéb)
+  - Üzenet (textarea, 5 rows)
+- Each input is wrapped in a "BottomGradient" effect:
+  - The input has bg-zinc-900, rounded-md, border border-zinc-800, text-white, focus:ring-2 ring-neutral-600.
+  - On focus, a 1px gradient line slides in below the input (absolute h-px, bg-gradient-to-r from-transparent via-cyan-500 to-transparent, opacity-0 group-hover/input:opacity-100 transition).
+- Submit button: "Küldés →" (font-medium), full width, bg-gradient-to-br from-zinc-800 to-zinc-900, hover lifts a soft glow (shadow-[0px_1px_0px_0px_rgba(255,255,255,0.1)_inset]).
+- After submit show a success toast (or inline message).
+- Use react-hook-form for state, zod resolver for validation. Required fields: name, email, message.
+
+File: components/ui/contact-form.tsx
+
+Visual detail — the "BottomGradient" snippet to reuse:
+const BottomGradient = () => (
+  <>
+    <span className="group-hover/input:opacity-100 block transition duration-500 opacity-0 absolute h-px w-full -bottom-px inset-x-0 bg-gradient-to-r from-transparent via-cyan-500 to-transparent" />
+    <span className="group-hover/input:opacity-100 blur-sm block transition duration-500 opacity-0 absolute h-px w-1/2 mx-auto -bottom-px inset-x-10 bg-gradient-to-r from-transparent via-indigo-500 to-transparent" />
+  </>
+);
+
+Wrap each input with `<div className="group/input relative">…<BottomGradient /></div>`.
+
+Usage: just drop <ContactForm /> in /app/contact/page.tsx.
