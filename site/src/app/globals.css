@@ -1,0 +1,130 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  color-scheme: light;
+  --bg: #F4EFE2;
+  --bg-soft: #ECE5D2;
+  --ink-body: #3D362C;
+  --ink-head: #1F1B14;
+  --copper: #B07D52;
+  --rule: #DDD3B9;
+}
+
+html,
+body {
+  background: var(--bg);
+  color: var(--ink-body);
+  -webkit-font-smoothing: antialiased;
+  scroll-behavior: smooth;
+}
+
+::selection {
+  background: #B07D52;
+  color: #FBF7EE;
+}
+
+/* Hide scrollbar in horizontal carousels */
+.no-scrollbar::-webkit-scrollbar { display: none; }
+.no-scrollbar { scrollbar-width: none; }
+
+/* Marquee mask */
+.marquee-mask {
+  -webkit-mask-image: linear-gradient(to right, transparent, black 8%, black 92%, transparent);
+  mask-image: linear-gradient(to right, transparent, black 8%, black 92%, transparent);
+}
+
+/* Paper-texture grain overlay — very subtle */
+.grain::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 100;
+  opacity: 0.18;
+  mix-blend-mode: multiply;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='220' height='220'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/><feColorMatrix type='matrix' values='0 0 0 0 0.74 0 0 0 0 0.62 0 0 0 0 0.42 0 0 0 0.4 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
+}
+
+/* Decorative corner brackets — drop on any positioned container with .frame */
+.frame { position: relative; }
+.frame::before,
+.frame::after,
+.frame > .frame-tl,
+.frame > .frame-tr,
+.frame > .frame-bl,
+.frame > .frame-br {
+  content: "";
+  position: absolute;
+  width: 24px;
+  height: 24px;
+  border-color: var(--ink-head);
+  border-style: solid;
+  border-width: 0;
+}
+.frame > .frame-tl { top: 0; left: 0; border-top-width: 1.5px; border-left-width: 1.5px; }
+.frame > .frame-tr { top: 0; right: 0; border-top-width: 1.5px; border-right-width: 1.5px; }
+.frame > .frame-bl { bottom: 0; left: 0; border-bottom-width: 1.5px; border-left-width: 1.5px; }
+.frame > .frame-br { bottom: 0; right: 0; border-bottom-width: 1.5px; border-right-width: 1.5px; }
+
+/* ───────────── DESIGN TOKENS — typography & utility classes ───────────── */
+@layer components {
+  /* Over-image overlays — white text on dark gradient */
+  .on-image-eyebrow {
+    @apply text-xs uppercase tracking-[0.3em] text-white/70;
+  }
+  .on-image-title {
+    @apply font-display text-2xl md:text-3xl text-white leading-tight tracking-tight;
+  }
+  .on-image-body {
+    @apply text-sm text-white/80;
+  }
+
+  /* On the cream background */
+  .eyebrow {
+    @apply text-[0.7rem] uppercase tracking-[0.3em] text-ink-400;
+  }
+  .eyebrow-accent {
+    @apply text-[0.7rem] uppercase tracking-[0.3em] text-copper-600;
+  }
+
+  /* Page heading — top of subpage hero */
+  .h-page {
+    @apply font-display text-5xl md:text-7xl text-ink-800 leading-[0.9] tracking-tight;
+  }
+  /* Section heading */
+  .h-section {
+    @apply font-display text-4xl md:text-6xl text-ink-800 leading-[0.9] tracking-tight;
+  }
+  /* Sub-section heading */
+  .h-sub {
+    @apply font-display text-3xl md:text-4xl text-ink-800 leading-tight tracking-tight;
+  }
+
+  /* Display "stamp" — the small numbered tickers (01, 02, ...) */
+  .stamp {
+    @apply font-display text-2xl md:text-3xl text-copper-600 tracking-tight;
+  }
+
+  /* Body text */
+  .lead {
+    @apply text-base md:text-lg text-ink-600 leading-relaxed;
+  }
+  .body {
+    @apply text-base text-ink-600 leading-relaxed;
+  }
+  .caption {
+    @apply text-sm text-ink-400;
+  }
+
+  /* Horizontal em-dash rule */
+  .hr-dash {
+    @apply h-px w-full bg-cream-300;
+  }
+
+  /* Brand chip — small "EST · 2026" or "F/2.8 · ISO 400" style label */
+  .brand-chip {
+    @apply text-[0.7rem] uppercase tracking-[0.25em] text-ink-400;
+  }
+}
