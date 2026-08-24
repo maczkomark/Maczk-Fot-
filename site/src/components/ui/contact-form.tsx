@@ -1,11 +1,11 @@
 "use client";
 
 import { cn } from "@/lib/utils";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 const ENDPOINT =
-  process.env.NEXT_PUBLIC_FORM_ENDPOINT ?? "https://api.maczkoweb.hu/api/contact";
-const FORM_TOKEN = process.env.NEXT_PUBLIC_FORM_TOKEN ?? "";
+  process.env.NEXT_PUBLIC_FORM_ENDPOINT ??
+  "https://form.mmdigital.hu/api/form/cK9vQbOuK-GH";
 
 const BottomGradient = () => (
   <>
@@ -23,17 +23,18 @@ type Status = { kind: "idle" | "sending" | "ok" | "error"; message?: string };
 
 export const ContactForm = () => {
   const [status, setStatus] = useState<Status>({ kind: "idle" });
-  const tokenMissing = !FORM_TOKEN;
+
+  // Az űrlap megnyitásának ideje (epoch ms) — spamszűréshez.
+  // Effectben töltjük ki, hogy a statikus HTML és a kliens ne térjen el.
+  const tsRef = useRef<HTMLInputElement>(null);
+  useEffect(() => {
+    if (tsRef.current && !tsRef.current.value) {
+      tsRef.current.value = String(Date.now());
+    }
+  }, []);
 
   const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    if (tokenMissing) {
-      setStatus({
-        kind: "error",
-        message: "Az űrlap még nincs aktiválva (hiányzó token).",
-      });
-      return;
-    }
 
     const form = e.currentTarget;
     const data = new FormData(form);
@@ -47,16 +48,18 @@ export const ContactForm = () => {
 
     setStatus({ kind: "sending" });
     try {
-      // application/x-www-form-urlencoded — egyszerűbb CORS preflight nélkül
-      const body = new URLSearchParams();
-      for (const [k, v] of data.entries()) body.append(k, String(v));
+      const payload: Record<string, string | number> = {};
+      for (const [k, v] of data.entries()) payload[k] = String(v);
+      payload._ts = Number(data.get("_ts")) || Date.now();
 
       const res = await fetch(ENDPOINT, {
         method: "POST",
-        headers: { "Content-Type": "application/x-www-form-urlencoded" },
-        body,
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
       });
-      const json = await res.json().catch(() => ({ ok: false, error: "Szerverhiba" }));
+      const json = await res
+        .json()
+        .catch(() => ({ ok: false, error: "Szerverhiba — próbáld újra később." }));
 
       if (!res.ok || !json.ok) {
         setStatus({
@@ -68,6 +71,7 @@ export const ContactForm = () => {
 
       setStatus({ kind: "ok", message: "Köszi az üzenetet! 24 órán belül válaszolok." });
       form.reset();
+      if (tsRef.current) tsRef.current.value = String(Date.now());
     } catch {
       setStatus({
         kind: "error",
@@ -79,12 +83,9 @@ export const ContactForm = () => {
   return (
     <form
       onSubmit={onSubmit}
-      action={ENDPOINT}
-      method="POST"
       className={cn("w-full max-w-md mx-auto p-8 md:p-10 rounded-sm bg-cream-50 border border-cream-300")}
     >
-      {/* Hidden: signed token + honeypot */}
-      <input type="hidden" name="_token" value={FORM_TOKEN} />
+      {/* Hidden: honeypot + időbélyeg */}
       <input
         type="text"
         name="_gotcha"
@@ -93,6 +94,7 @@ export const ContactForm = () => {
         aria-hidden="true"
         className="hidden"
       />
+      <input ref={tsRef} type="hidden" name="_ts" />
 
       <div className="flex items-center justify-between mb-6">
         <span className="brand-chip">— Felkérés</span>
@@ -161,12 +163,6 @@ export const ContactForm = () => {
       {status.kind === "error" && (
         <p className="mt-5 text-sm text-red-800 bg-red-100 border border-red-300 rounded-sm px-4 py-3">
           ✗ {status.message}
-        </p>
-      )}
-      {tokenMissing && status.kind === "idle" && (
-        <p className="mt-5 text-xs text-amber-800 bg-amber-100 border border-amber-300 rounded-sm px-4 py-3">
-          ⚠ A form még nem aktív — állítsd be a <code className="font-mono">NEXT_PUBLIC_FORM_TOKEN</code> env változót
-          a <code className="font-mono">.env.local</code>-ban.
         </p>
       )}
 

@@ -52,8 +52,7 @@ jobs:
       - name: Build with Next.js
         run: npx next build
         env:
-          NEXT_PUBLIC_FORM_TOKEN: ${{ secrets.NEXT_PUBLIC_FORM_TOKEN }}
-          NEXT_PUBLIC_FORM_ENDPOINT: https://api.maczkoweb.hu/api/contact
+          NEXT_PUBLIC_FORM_ENDPOINT: https://form.mmdigital.hu/api/form/cK9vQbOuK-GH
           NEXT_PUBLIC_SITE_URL: https://maczkofoto.hu
 
       - name: Upload artifact
