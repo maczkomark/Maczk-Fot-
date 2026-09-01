@@ -6,20 +6,26 @@ import { Section, SectionHeader, GUTTER } from "@/components/ui/section";
 import { albums, getAlbum } from "@/lib/albums";
 import { services, site, type Service } from "@/lib/site";
 import { breadcrumbLd, faqLd, serviceLd } from "@/lib/seo";
+import { pickHighlights } from "@/lib/picks";
 
 export function ServicePage({ service }: { service: Service }) {
-  const heroAlbum = getAlbum(service.heroAlbum);
   const related = albums.filter((a) => service.categories.includes(a.category));
-  const heroSrc = heroAlbum?.cover ?? related[0]?.cover ?? albums[0]?.cover ?? "";
 
-  // Vegyes válogatás a kapcsolódó albumok képeiből, hogy legyen mit nézni.
-  const strip: { src: string; alt: string; href: string }[] = [];
-  for (const a of related) {
-    for (const src of a.images.slice(0, 3)) {
-      strip.push({ src, alt: `${a.title} — ${service.name.toLowerCase()} fotózás`, href: `/portfolio/${a.slug}` });
-    }
-    if (strip.length >= 12) break;
-  }
+  // A fejléckép és a képsáv is a kiemelt készletből jön, nem mindig ugyanaz.
+  const heroPick = pickHighlights({
+    count: 1,
+    categories: service.categories,
+    seedKey: `svc-hero-${service.slug}`,
+  })[0];
+  const heroSrc =
+    heroPick?.src ?? getAlbum(service.heroAlbum)?.cover ?? related[0]?.cover ?? "";
+
+  const strip = pickHighlights({
+    count: 12,
+    categories: service.categories,
+    exclude: [heroSrc],
+    seedKey: `svc-strip-${service.slug}`,
+  });
 
   const others = services.filter((s) => s.slug !== service.slug);
 

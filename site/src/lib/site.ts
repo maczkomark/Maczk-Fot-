@@ -196,38 +196,6 @@ export const services: Service[] = [
       },
     ],
   },
-  {
-    slug: "portre-fotozas",
-    name: "Portré",
-    heading: "Portré- és páros fotózás",
-    title: "Portréfotós Szombathely — páros és üzleti portré | Maczkó Fotó",
-    description:
-      "Portréfotózás Szombathelyen: páros fotózás, üzleti portré, profilkép. Természetes fény, nyugodt tempó, használható végeredmény.",
-    short: "Páros fotózás, üzleti portré, profilkép.",
-    intro: [
-      "A portrénál a legfontosabb, hogy oldott legyél. Ha görcsölsz, az meglátszik a képen, és semmilyen utómunka nem javítja meg. Ezért nem sietünk, és nem is kell pózolni tudnod — elmondom, mit csinálj.",
-      "Páros fotózáshoz általában külső helyszínt választunk: erdő, város, egy hely, ami mond valamit rólatok.",
-      "Üzleti portréhoz és profilképhez sötét vagy semleges háttérrel dolgozom, hogy bárhol fel tudd használni.",
-    ],
-    includes: [
-      "Előzetes egyeztetés a helyszínről és a hangulatról",
-      "Nyugodt tempójú fotózás, konkrét instrukciókkal",
-      "Válogatott, szerkesztett képek online galériában",
-      "Web- és nyomdakész méretek",
-    ],
-    categories: ["Portré"],
-    heroAlbum: "koszeg",
-    faq: [
-      {
-        q: "Mennyi ideig tart egy portréfotózás?",
-        a: "Egy portré- vagy páros fotózás jellemzően másfél-két óra, helyszíntől függően.",
-      },
-      {
-        q: "Nem tudok pózolni, ez baj?",
-        a: "Nem. A fotózás nagy részében mondom, mit csinálj, és a legjobb képek úgyis a két beállítás közötti pillanatokban születnek.",
-      },
-    ],
-  },
 ];
 
 export const getService = (slug: string) => services.find((s) => s.slug === slug);

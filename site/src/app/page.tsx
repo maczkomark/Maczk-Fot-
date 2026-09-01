@@ -7,14 +7,26 @@ import { Section, SectionHeader, GUTTER } from "@/components/ui/section";
 import { albums, getAlbum } from "@/lib/albums";
 import { services, site, gear } from "@/lib/site";
 import { breadcrumbLd } from "@/lib/seo";
+import { pickHighlights } from "@/lib/picks";
 
 export default function Home() {
   const totalImages = albums.reduce((s, a) => s + a.count, 0);
-  const featured = albums.slice(0, 8);
 
+  // Minden műfajhoz egy jó kép a közös készletből — nem mindig ugyanaz.
   const serviceCards = services.map((s) => {
-    const album = getAlbum(s.heroAlbum) ?? albums.find((a) => s.categories.includes(a.category));
-    return { ...s, cover: album?.cover ?? albums[0]?.cover ?? "" };
+    const pick = pickHighlights({
+      count: 1,
+      categories: s.categories,
+      seedKey: `home-service-${s.slug}`,
+    })[0];
+    return { ...s, cover: pick?.src ?? getAlbum(s.heroAlbum)?.cover ?? "" };
+  });
+
+  // Vegyes válogatás a teljes készletből, a fentiek nélkül.
+  const featured = pickHighlights({
+    count: 8,
+    exclude: serviceCards.map((s) => s.cover),
+    seedKey: "home-featured",
   });
 
   return (
@@ -37,29 +49,23 @@ export default function Home() {
       </Section>
 
       <div className={`${GUTTER} max-w-[120rem] mx-auto pb-20 md:pb-28`}>
-        <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+        <div className="grid gap-3 sm:grid-cols-2">
           {serviceCards.map((s, i) => (
             <Link
               key={s.slug}
               href={`/${s.slug}`}
-              className={`group relative overflow-hidden bg-ink-950 ${
-                i === 0 ? "sm:col-span-2 lg:row-span-2 aspect-[4/3] lg:aspect-auto lg:min-h-[36rem]" : "aspect-[4/3]"
-              }`}
+              className="group relative overflow-hidden bg-ink-950 aspect-[4/3]"
             >
               <Image
                 src={s.cover}
                 alt={`${s.name} fotózás — Maczkó Fotó`}
                 fill
-                sizes={i === 0 ? "(max-width: 1024px) 100vw, 66vw" : "(max-width: 640px) 100vw, 33vw"}
+                sizes="(max-width: 640px) 100vw, 50vw"
                 className="object-cover opacity-85 transition duration-700 group-hover:opacity-100 group-hover:scale-[1.03]"
               />
               <div className="absolute inset-0 bg-gradient-to-t from-ink-950/90 via-ink-950/20 to-transparent" />
               <div className="absolute inset-x-0 bottom-0 p-6 md:p-8">
-                <h3
-                  className={`font-display text-white tracking-tight ${
-                    i === 0 ? "text-3xl md:text-5xl" : "text-2xl md:text-3xl"
-                  }`}
-                >
+                <h3 className="font-display text-white tracking-tight text-3xl md:text-5xl">
                   {s.name}
                 </h3>
                 <p className="mt-2 text-white/70 text-sm md:text-base max-w-sm">{s.short}</p>
@@ -158,25 +164,27 @@ export default function Home() {
 
       <div className={`${GUTTER} max-w-[120rem] mx-auto pb-20 md:pb-28`}>
         <div className="grid gap-3 grid-cols-2 lg:grid-cols-4">
-          {featured.map((a, i) => (
+          {featured.map((pic, i) => (
             <Link
-              key={a.slug}
-              href={`/portfolio/${a.slug}`}
+              key={pic.src}
+              href={pic.href}
               className={`group relative overflow-hidden bg-ink-950 ${
                 i === 0 || i === 5 ? "col-span-2 aspect-[4/3]" : "aspect-[3/4]"
               }`}
             >
               <Image
-                src={a.cover}
-                alt={`${a.title} — ${a.category.toLowerCase()} fotózás`}
+                src={pic.src}
+                alt={pic.alt}
                 fill
                 sizes="(max-width: 640px) 50vw, 25vw"
                 className="object-cover transition duration-700 group-hover:scale-[1.04]"
               />
               <div className="absolute inset-0 bg-gradient-to-t from-ink-950/85 via-transparent to-transparent opacity-90" />
               <div className="absolute inset-x-0 bottom-0 p-4 md:p-6">
-                <p className="text-[0.65rem] uppercase tracking-[0.25em] text-white/60">{a.category}</p>
-                <h3 className="font-display text-lg md:text-2xl text-white mt-1.5 leading-tight">{a.title}</h3>
+                <p className="text-[0.65rem] uppercase tracking-[0.25em] text-white/60">{pic.category}</p>
+                <h3 className="font-display text-lg md:text-2xl text-white mt-1.5 leading-tight">
+                  {pic.albumTitle}
+                </h3>
               </div>
             </Link>
           ))}

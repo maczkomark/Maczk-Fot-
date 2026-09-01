@@ -13,6 +13,8 @@ export type Album = {
   cover: string;
   featured: number;
   images: string[];
+  /** A galéria legjobb képei — ebből válogat a nyitóoldal és a szolgáltatások. */
+  highlights: string[];
   hidden?: boolean;
 };
 
@@ -55,6 +57,12 @@ function readAlbums(): Album[] {
     const cover = `/portfolio/${slug}/${files[featuredIdx - 1]}`;
     const images = files.map((f) => `/portfolio/${slug}/${f}`);
 
+    // A kézzel kiválasztott jó képek. Ha nincs megadva, marad a borító.
+    const picked = (meta.highlights ?? [])
+      .filter((n) => Number.isInteger(n) && n >= 1 && n <= files.length)
+      .map((n) => `/portfolio/${slug}/${files[n - 1]}`);
+    const highlights = picked.length > 0 ? picked : [cover];
+
     albums.push({
       slug,
       title: meta.title,
@@ -66,6 +74,7 @@ function readAlbums(): Album[] {
       cover,
       featured: featuredIdx,
       images,
+      highlights,
     });
   }
 

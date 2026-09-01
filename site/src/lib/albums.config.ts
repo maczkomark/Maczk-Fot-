@@ -20,6 +20,12 @@ export type AlbumMeta = {
   description?: string;
   /** 1-alapú sorszám: melyik kép legyen a borító. Ha nincs, az 1. képet használja. */
   featured?: number;
+  /**
+   * A galéria legjobb képeinek 1-alapú sorszámai. Ebből a közös készletből
+   * válogat a nyitóoldal és a szolgáltatás-oldalak, hogy ne mindig ugyanaz a
+   * pár kép ismétlődjön.
+   */
+  highlights?: number[];
   /** Ha true, az album rejtve marad a listákon (de a /portfolio/<slug> oldal él). */
   hidden?: boolean;
 };
@@ -34,6 +40,7 @@ export const albumMeta: Record<string, AlbumMeta> = {
     description:
       "Egész napos esküvő a jáki bazilikában, a készülődéstől az esti mulatságig.",
     featured: 13,
+    highlights: [12, 16, 20],
   },
   "eszter-milan": {
     title: "Eszter és Milán esküvője",
@@ -42,8 +49,11 @@ export const albumMeta: Record<string, AlbumMeta> = {
     location: "Szombathely",
     description:
       "Nyári esküvő Szombathelyen, a délelőtti találkozástól a szertartásig. Válogatás a nap képeiből.",
-    featured: 1,
+    featured: 13,
+    highlights: [13, 9, 11, 6],
   },
+  // A kőszegi páros fotózás egyelőre nincs kint az oldalon. A képek megvannak
+  // a portfolio/kőszeg mappában — a hidden törlésével bármikor visszakerül.
   koszeg: {
     title: "Páros fotózás Kőszegen",
     category: "Portré",
@@ -51,6 +61,7 @@ export const albumMeta: Record<string, AlbumMeta> = {
     location: "Kőszegi-hegység",
     description: "Rövid páros fotózás a kőszegi erdőben, néhány légi felvétellel.",
     featured: 4,
+    hidden: true,
   },
 
   // ───── Sport ─────
@@ -61,6 +72,7 @@ export const albumMeta: Record<string, AlbumMeta> = {
     location: "Aréna Savaria, Szombathely",
     description: "Európa-kupa kosárlabda-mérkőzés az Aréna Savariában.",
     featured: 13,
+    highlights: [12, 20, 5],
   },
   "falco-donto": {
     title: "Falco KC, bajnoki döntő",
@@ -69,6 +81,7 @@ export const albumMeta: Record<string, AlbumMeta> = {
     location: "Aréna Savaria, Szombathely",
     description:
       "A magyar kosárlabda-bajnokság döntője, a mérkőzéssel és a lelátói hangulattal.",
+    highlights: [19, 25, 13],
   },
   "a-300-meccs-haladas-vs-us-lecce": {
     title: "Haladás – US Lecce",
@@ -78,6 +91,7 @@ export const albumMeta: Record<string, AlbumMeta> = {
     description:
       "Felkészülési mérkőzés az olasz US Lecce ellen, a stadion 300. meccse.",
     featured: 23,
+    highlights: [12, 23, 1],
   },
   "haladas-vs-balatonalmadi": {
     title: "Haladás – Balatonalmádi",
@@ -85,6 +99,7 @@ export const albumMeta: Record<string, AlbumMeta> = {
     location: "Haladás Sportkomplexum, Szombathely",
     description: "Bajnoki labdarúgó-mérkőzés, játékosportrékkal.",
     featured: 18,
+    highlights: [18, 24, 13],
   },
   "haladas-sajtotajekoztato": {
     title: "Haladás, évadzáró",
@@ -93,6 +108,7 @@ export const albumMeta: Record<string, AlbumMeta> = {
     location: "Haladás Sportkomplexum, Szombathely",
     description:
       "A Szombathelyi Haladás szezonzáró sajtótájékoztatója és az azt követő mérkőzés.",
+    highlights: [8, 31],
   },
   "haladas-szurkoloi-anket": {
     title: "Haladás, szurkolói ankét",
@@ -101,6 +117,7 @@ export const albumMeta: Record<string, AlbumMeta> = {
     location: "Szombathely",
     description: "Szurkolói fórum a klub vezetőivel, szezon előtt.",
     featured: 6,
+    highlights: [6],
   },
   "vas-varmegyei-kupadonto": {
     title: "Vas vármegyei kupadöntő",
@@ -108,6 +125,7 @@ export const albumMeta: Record<string, AlbumMeta> = {
     date: "2026.05.28",
     location: "Haladás Sportkomplexum, Szombathely",
     description: "A vármegyei labdarúgókupa döntője.",
+    highlights: [15, 19, 24],
   },
   "szkka-budaors-kezilabda": {
     title: "SZKKA – Budaörs",
@@ -116,6 +134,7 @@ export const albumMeta: Record<string, AlbumMeta> = {
     location: "Szombathely",
     description: "Női kézilabda-mérkőzés a szombathelyi csarnokban.",
     featured: 5,
+    highlights: [10, 16, 13],
   },
   "sportliget-focidonto": {
     title: "Sportligeti focidöntő",
@@ -124,6 +143,7 @@ export const albumMeta: Record<string, AlbumMeta> = {
     location: "Sportliget, Szombathely",
     description: "Diákfoci-döntő salakos pályán, a Sportligetben.",
     featured: 13,
+    highlights: [10, 13, 4],
   },
   streetball: {
     title: "Streetball-torna",
@@ -132,6 +152,7 @@ export const albumMeta: Record<string, AlbumMeta> = {
     location: "Fő tér, Szombathely",
     description: "Háromfős utcai kosárlabdatorna a Fő téren.",
     featured: 27,
+    highlights: [21, 34, 14],
   },
   kosartabor: {
     title: "Kosárlabdatábor",
@@ -140,6 +161,7 @@ export const albumMeta: Record<string, AlbumMeta> = {
     location: "Szombathely",
     description: "Nyári kosárlabdatábor gyerekeknek, két nap edzései.",
     featured: 54,
+    highlights: [54, 89, 36],
   },
 
   // ───── Koncert, buli ─────
@@ -149,6 +171,7 @@ export const albumMeta: Record<string, AlbumMeta> = {
     date: "2026.05.17",
     location: "Végállomás klub, Szombathely",
     description: "Kő-Core-Szaki és a társulat koncertje a Végállomásban.",
+    highlights: [10, 36, 45],
   },
   "majalis-ejszaka": {
     title: "Majális, esti koncertek",
@@ -157,6 +180,7 @@ export const albumMeta: Record<string, AlbumMeta> = {
     location: "Szombathely",
     description: "A szombathelyi majális esti koncertjei a nagyszínpadon.",
     featured: 9,
+    highlights: [22, 18, 9],
   },
   "anima-koncert": {
     title: "Anima Sound System és a Savaria Szimfonikus Zenekar",
@@ -165,6 +189,7 @@ export const albumMeta: Record<string, AlbumMeta> = {
     location: "Fő tér, Szombathely",
     description: "Közös szabadtéri koncert a karneváli héten.",
     featured: 4,
+    highlights: [7, 11, 14],
   },
   "karneval-beton-hofi": {
     title: "Beton.Hofi a Savaria Karneválon",
@@ -173,6 +198,7 @@ export const albumMeta: Record<string, AlbumMeta> = {
     location: "Szombathely",
     description: "Esti koncert a Történelmi Karnevál nagyszínpadán.",
     featured: 15,
+    highlights: [20, 25, 15, 1],
   },
   szentivanej: {
     title: "Szentivánéj",
@@ -181,6 +207,7 @@ export const albumMeta: Record<string, AlbumMeta> = {
     location: "Szombathely",
     description: "Szentivánéji fesztivál koncertekkel, vásárral és tűzijátékkal.",
     featured: 26,
+    highlights: [18, 35, 26, 43],
   },
   "karneval-all-night-maxxx": {
     title: "Karnevál All Night",
@@ -189,6 +216,7 @@ export const albumMeta: Record<string, AlbumMeta> = {
     location: "Maxxx Club, Szombathely",
     description: "Karneváli éjszakai buli a Maxxx Clubban.",
     featured: 84,
+    highlights: [111, 56, 139],
   },
   "maxxx-club-buli": {
     title: "Maxxx Club",
@@ -196,6 +224,7 @@ export const albumMeta: Record<string, AlbumMeta> = {
     date: "2026.07.31",
     location: "Maxxx Club, Szombathely",
     description: "Szombat esti buli a Maxxx Clubban.",
+    highlights: [83, 28, 137],
   },
 
   // ───── Esemény ─────
@@ -206,6 +235,7 @@ export const albumMeta: Record<string, AlbumMeta> = {
     location: "Szombathely belváros",
     description: "A jubileumi karnevál felvonulása a belvárosi utcákon.",
     featured: 63,
+    highlights: [79, 63, 48],
   },
   "karneval-zaszloforgatas": {
     title: "Zászlóforgatók a Savaria Karneválon",
@@ -214,6 +244,7 @@ export const albumMeta: Record<string, AlbumMeta> = {
     location: "Fő tér, Szombathely",
     description: "Zászlóforgató bemutató a Történelmi Karneválon.",
     featured: 10,
+    highlights: [10, 23, 19],
   },
   "tuzes-jatekok": {
     title: "Tüzes játékok",
@@ -222,6 +253,7 @@ export const albumMeta: Record<string, AlbumMeta> = {
     location: "Szombathely",
     description: "Esti tűzzsonglőr-bemutató a Savaria Történelmi Karneválon.",
     featured: 23,
+    highlights: [23, 17, 12],
   },
   "petofi-telep-utcabal": {
     title: "Petőfi-telepi utcabál",
@@ -231,6 +263,7 @@ export const albumMeta: Record<string, AlbumMeta> = {
     description:
       "Egész napos utcabál a Petőfi-telepen, közös főzéssel és hosszú asztalokkal.",
     featured: 31,
+    highlights: [92, 152, 31],
   },
   "joskarola-napok-szombat": {
     title: "Jóskarola Napok",
@@ -240,6 +273,7 @@ export const albumMeta: Record<string, AlbumMeta> = {
     description:
       "A fesztivál szombati napja: utcai tánc a nagyszínpadon, vurstli a téren.",
     featured: 20,
+    highlights: [7, 26, 32],
   },
   "balogunyom-majalis": {
     title: "Balogunyomi majális",
@@ -249,6 +283,7 @@ export const albumMeta: Record<string, AlbumMeta> = {
     description:
       "Falusi majális májusfaállítással, veterán teherautókkal és motorokkal.",
     featured: 14,
+    highlights: [4, 8, 11],
   },
   "majalis-szombathely": {
     title: "Majális, Szombathely",
@@ -257,6 +292,7 @@ export const albumMeta: Record<string, AlbumMeta> = {
     location: "Szombathely",
     description: "A nappali majális vidámparkkal, körhintával, családokkal.",
     featured: 10,
+    highlights: [14, 11, 1],
   },
   "herenyi-viragut": {
     title: "Herényi Virágút",
@@ -265,6 +301,7 @@ export const albumMeta: Record<string, AlbumMeta> = {
     location: "Herény, Szombathely",
     description: "Az évente megrendezett herényi virágvásár.",
     featured: 5,
+    highlights: [6, 20, 25],
   },
   "bohoc-fesztival": {
     title: "Bohócfesztivál",
@@ -273,6 +310,7 @@ export const albumMeta: Record<string, AlbumMeta> = {
     location: "Fő tér, Szombathely",
     description: "Utcai bohócfesztivál, a téren ülő gyerekközönséggel.",
     featured: 15,
+    highlights: [8, 11],
   },
   "kresz-park-gyereknap": {
     title: "Gyereknap a KRESZ-parkban",
@@ -282,6 +320,7 @@ export const albumMeta: Record<string, AlbumMeta> = {
     description:
       "Gyereknapi programok: kézműves asztalok, szappandoboz-autók, foci.",
     featured: 20,
+    highlights: [7, 20, 26],
   },
   "japan-kert-atadas": {
     title: "A Japánkert átadása",
@@ -290,6 +329,7 @@ export const albumMeta: Record<string, AlbumMeta> = {
     location: "Szombathely",
     description: "A megújult Japánkert ünnepélyes átadása, taikó dobosokkal.",
     featured: 1,
+    highlights: [1, 23, 12],
   },
   "levendula-fesztival": {
     title: "Levendulafesztivál",
@@ -297,6 +337,7 @@ export const albumMeta: Record<string, AlbumMeta> = {
     date: "2026.05.31",
     description: "Levendulaszedés és utcai programok a fesztivál napján.",
     featured: 11,
+    highlights: [6, 9, 4],
   },
   "szenvedelyes-nok-kertmozi": {
     title: "Kertmozi",
@@ -304,6 +345,7 @@ export const albumMeta: Record<string, AlbumMeta> = {
     date: "2026.07.31",
     location: "Szombathely",
     description: "Szabadtéri filmvetítés, tele gyeppel és pokrócokkal.",
+    highlights: [19, 1, 5],
   },
   "urban-p-ar-ty": {
     title: "URBAN pARTy",
@@ -312,6 +354,7 @@ export const albumMeta: Record<string, AlbumMeta> = {
     location: "Szombathely belváros",
     description: "Utcai kézműves vásár és élőzene a belvárosban.",
     featured: 7,
+    highlights: [17, 7, 11],
   },
   bolyaiballagas: {
     title: "Ballagás a Bolyaiban",
@@ -320,6 +363,7 @@ export const albumMeta: Record<string, AlbumMeta> = {
     location: "Bolyai János Gimnázium, Szombathely",
     description: "Ballagási ünnepség a gimnázium udvarán.",
     featured: 10,
+    highlights: [1, 6],
   },
   "dok-valasztas": {
     title: "Megyei diákpolgármester-választás",
@@ -328,6 +372,7 @@ export const albumMeta: Record<string, AlbumMeta> = {
     location: "Városháza, Szombathely",
     description:
       "A megyei diákpolgármester-választás eredményhirdetése és díjátadója.",
+    highlights: [21, 26],
   },
   "orszagos-tanulmanyi-verseny": {
     title: "Országos tanulmányi verseny, díjátadó",
@@ -336,6 +381,7 @@ export const albumMeta: Record<string, AlbumMeta> = {
     location: "Szombathely",
     description: "Az országos tanulmányi verseny díjátadó ünnepsége.",
     featured: 18,
+    highlights: [1],
   },
   "korhaz-dijatado": {
     title: "Kórházi díjátadó",
@@ -344,6 +390,7 @@ export const albumMeta: Record<string, AlbumMeta> = {
     location: "Szombathely",
     description: "Díjátadó ünnepség a megyei kórházban.",
     featured: 11,
+    highlights: [21],
   },
   "rendor-fokapitany-kinevezes": {
     title: "Rendőrfőkapitányi kinevezés",
@@ -352,6 +399,7 @@ export const albumMeta: Record<string, AlbumMeta> = {
     location: "Szombathely",
     description: "Az új vármegyei rendőrfőkapitány kinevezési ünnepsége.",
     featured: 11,
+    highlights: [22],
   },
   "vep-david-kornel-divatbemunto": {
     title: "Dávid Kornél divatbemutatója",
@@ -359,6 +407,7 @@ export const albumMeta: Record<string, AlbumMeta> = {
     date: "2026.05.17",
     location: "Vép",
     description: "Divatbemutató Vépen, kifutóval és színpadi világítással.",
+    highlights: [35, 12, 47],
   },
   kekseta: {
     title: "Kék séta",
@@ -366,6 +415,7 @@ export const albumMeta: Record<string, AlbumMeta> = {
     date: "2026.04.01",
     location: "Szombathely",
     description: "Autizmus-figyelemfelhívó séta kék lufikkal, a belvárosban.",
+    highlights: [8, 12, 5],
   },
 
   // ───── Riport ─────
@@ -376,6 +426,7 @@ export const albumMeta: Record<string, AlbumMeta> = {
     location: "Szombathely",
     description: "Virágvásár anyák napja előtt, a piaci sátrak között.",
     featured: 8,
+    highlights: [5, 8],
   },
   "szanto-istvan-festmeny": {
     title: "Szántó István falfestménye",
@@ -385,6 +436,7 @@ export const albumMeta: Record<string, AlbumMeta> = {
     description:
       "Szántó István tűzfalfestményének készítése, az állványtól a kész műig.",
     featured: 9,
+    highlights: [4, 7, 12],
   },
   "jatszoter-szemetszedes": {
     title: "Szemétszedés a játszótéren",
@@ -393,6 +445,7 @@ export const albumMeta: Record<string, AlbumMeta> = {
     location: "Szombathely",
     description: "Önkéntes szemétszedés egy játszótéren és a környékén.",
     featured: 11,
+    highlights: [8],
   },
 
   // ───── Architektúra, város ─────
@@ -404,6 +457,7 @@ export const albumMeta: Record<string, AlbumMeta> = {
     description:
       "Naplemente a felújított víztorony tetejéről, kilátással a városra.",
     featured: 8,
+    highlights: [10, 12, 8],
   },
   "szombathely-regi-epuletei": {
     title: "Szombathelyi régi épületek",
@@ -411,6 +465,7 @@ export const albumMeta: Record<string, AlbumMeta> = {
     date: "2026.05.20",
     location: "Szombathely belváros",
     description: "Szecessziós és barokk homlokzatok a belvárosban.",
+    highlights: [12, 7, 1],
   },
   pozsony: {
     title: "Pozsony",
@@ -419,6 +474,7 @@ export const albumMeta: Record<string, AlbumMeta> = {
     location: "Pozsony, Szlovákia",
     description:
       "Kétnapos városnézés: a vár, a koronázási ékszerek másolatai és a belváros.",
+    highlights: [20, 13, 7, 32],
   },
 
   // ───── Természet ─────
@@ -429,6 +485,7 @@ export const albumMeta: Record<string, AlbumMeta> = {
     location: "Tihany",
     description: "Az apátság, a kikötő és a félsziget ürgéi.",
     featured: 13,
+    highlights: [13, 17, 1, 21],
   },
   "japankert-galeria": {
     title: "Japánkert",
@@ -437,6 +494,7 @@ export const albumMeta: Record<string, AlbumMeta> = {
     location: "Szombathely",
     description: "Séta a Japánkertben, néhány nappal az átadás után.",
     featured: 23,
+    highlights: [18, 29, 12],
   },
   szhely: {
     title: "Csónakázó-tó",
@@ -445,6 +503,7 @@ export const albumMeta: Record<string, AlbumMeta> = {
     location: "Szombathely",
     description: "Borongós tavaszi délután a tó körül.",
     featured: 7,
+    highlights: [1, 6, 10],
   },
   "pozsony-allatkert": {
     title: "Pozsonyi állatkert",
@@ -453,6 +512,7 @@ export const albumMeta: Record<string, AlbumMeta> = {
     location: "Pozsony, Szlovákia",
     description: "Egy délelőtt az állatkertben: flamingók, őzek, háziállatok.",
     featured: 8,
+    highlights: [8, 19, 15, 5],
   },
 
   // ───── Gasztronómia ─────
@@ -463,6 +523,7 @@ export const albumMeta: Record<string, AlbumMeta> = {
     location: "Stúdió",
     description: "Termékfotó-sorozat egy palacsintázónak, kerámia tányérokkal.",
     featured: 5,
+    highlights: [13, 16, 7],
   },
 };
 
@@ -490,7 +551,6 @@ export const manualOrder: string[] = [
   "kosartabor",
   "pozsony",
   "palacsinta-kepek",
-  "koszeg",
   "joskarola-napok-szombat",
   "karneval-zaszloforgatas",
   "anima-koncert",

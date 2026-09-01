@@ -156,7 +156,11 @@ async function dirSize(dir) {
 
 async function main() {
   const t0 = Date.now();
-  const srcFolders = (await readDirSafe(SRC)).filter((e) => e.isDirectory());
+  // Az alulvonással kezdődő mappák nem kerülnek ki az oldalra. Így lehet egy
+  // galériát ideiglenesen levenni anélkül, hogy a képeket törölni kellene.
+  const srcFolders = (await readDirSafe(SRC)).filter(
+    (e) => e.isDirectory() && !e.name.startsWith("_"),
+  );
 
   await fs.mkdir(DST, { recursive: true });
   const dstFolderNames = (await readDirSafe(DST)).filter((e) => e.isDirectory()).map((e) => e.name);
