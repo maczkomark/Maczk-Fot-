@@ -6,3 +6,4 @@ build/
 !.env.local.example
 *.log
 .DS_Store
+public/portfolio/

@@ -50,7 +50,7 @@ jobs:
         run: npm ci
 
       - name: Build with Next.js
-        run: npx next build
+        run: npm run build
         env:
           NEXT_PUBLIC_FORM_ENDPOINT: https://form.mmdigital.hu/api/form/cK9vQbOuK-GH
           NEXT_PUBLIC_SITE_URL: https://maczkofoto.hu
