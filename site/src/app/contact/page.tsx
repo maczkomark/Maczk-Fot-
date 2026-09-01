@@ -1,79 +1,100 @@
+import Link from "next/link";
+import { Mail, Instagram, MapPin, Phone, Facebook, Clock } from "lucide-react";
 import { ContactForm } from "@/components/ui/contact-form";
-import { Eyebrow } from "@/components/ui/section";
-import { Frame } from "@/components/ui/frame";
-import Image from "next/image";
-import { Mail, Instagram, MapPin, Phone, Facebook } from "lucide-react";
-import { albums } from "@/lib/albums";
+import { JsonLd } from "@/components/site/jsonld";
+import { GUTTER } from "@/components/ui/section";
+import { breadcrumbLd, pageMeta } from "@/lib/seo";
+import { services, site } from "@/lib/site";
 
-export const metadata = { title: "Kapcsolat — Maczkó Fotó" };
+export const metadata = pageMeta({
+  title: "Kapcsolat — ajánlatkérés | Maczkó Fotó Szombathely",
+  description:
+    "Kérj ajánlatot esküvői, rendezvény-, buli- vagy sportfotózásra Szombathelyen és Vas vármegyében. 24 órán belül válaszolok.",
+  path: "/contact",
+});
 
-const contactRows = [
-  { icon: Phone, kicker: "Telefon", value: "+36 20 408 7765", href: "tel:+36204087765" },
-  { icon: Mail, kicker: "Email", value: "maczkomark08@gmail.com", href: "mailto:maczkomark08@gmail.com" },
-  { icon: Instagram, kicker: "Instagram", value: "@maczko_foto", href: "https://instagram.com/maczko_foto" },
-  { icon: Facebook, kicker: "Facebook", value: "Maczkó Fotó", href: "https://www.facebook.com/profile.php?id=61590258863710" },
-  { icon: MapPin, kicker: "Bázis", value: "Szombathely, Vas vármegye", href: undefined as string | undefined },
+const rows = [
+  { icon: Phone, kicker: "Telefon", value: site.phone, href: site.phoneHref },
+  { icon: Mail, kicker: "Email", value: site.email, href: `mailto:${site.email}` },
+  { icon: Instagram, kicker: "Instagram", value: site.instagramHandle, href: site.instagram },
+  { icon: Facebook, kicker: "Facebook", value: "Maczkó Fotó", href: site.facebook },
+  { icon: MapPin, kicker: "Bázis", value: `${site.city}, ${site.region}`, href: undefined },
+  { icon: Clock, kicker: "Válaszidő", value: site.responseTime, href: undefined },
 ];
 
 export default function ContactPage() {
-  const sideImage = albums.find((a) => a.slug === "viztorony-nyugat")?.cover ?? albums[0]?.cover ?? "";
-
   return (
-    <main className="min-h-screen">
-      <section className="pt-28 md:pt-36 pb-16 md:pb-24 px-6 md:px-12">
-        <div className="max-w-6xl mx-auto">
-          <div className="flex items-center justify-between mb-10">
-            <span className="brand-chip">— Maczkó Fotó / Kapcsolat</span>
-            <span className="brand-chip hidden sm:inline">F/2.8 — ISO 400</span>
+    <main>
+      <JsonLd
+        data={breadcrumbLd([
+          { name: "Főoldal", path: "/" },
+          { name: "Kapcsolat", path: "/contact" },
+        ])}
+      />
+
+      <section className={`${GUTTER} max-w-[120rem] mx-auto pt-28 md:pt-40 pb-16 md:pb-24`}>
+        <div className="grid gap-14 lg:grid-cols-12 lg:gap-16 items-start">
+          <div className="lg:col-span-6 xl:col-span-5">
+            <p className="eyebrow">— Kapcsolat</p>
+            <h1 className="font-display text-ink-800 leading-[0.9] tracking-tight text-[clamp(2.1rem,6.5vw,6rem)] mt-5">
+              Beszéljünk
+              <br />
+              <span className="italic text-copper-600">a dátumodról.</span>
+            </h1>
+            <p className="lead mt-8 max-w-lg">
+              Írd meg, mikor és hol lesz az esemény, és mit szeretnél. {site.responseTime}{" "}
+              válaszolok, konkrét ajánlattal — nem sablonlevéllel.
+            </p>
+
+            <dl className="mt-12 border-y border-cream-300 divide-y divide-cream-300">
+              {rows.map((row) => {
+                const Icon = row.icon;
+                const inner = (
+                  <div className="flex items-center gap-5 py-5 group">
+                    <span className="h-11 w-11 rounded-full border border-cream-300 flex items-center justify-center text-ink-600 group-hover:bg-cream-200 group-hover:text-copper-600 transition">
+                      <Icon className="h-4 w-4" />
+                    </span>
+                    <span className="flex-1">
+                      <dt className="eyebrow">{row.kicker}</dt>
+                      <dd className="text-ink-800 mt-1">{row.value}</dd>
+                    </span>
+                    {row.href && <span className="text-copper-600">→</span>}
+                  </div>
+                );
+                return row.href ? (
+                  <a
+                    key={row.kicker}
+                    href={row.href}
+                    target={row.href.startsWith("http") ? "_blank" : undefined}
+                    rel={row.href.startsWith("http") ? "noreferrer" : undefined}
+                    className="block"
+                  >
+                    {inner}
+                  </a>
+                ) : (
+                  <div key={row.kicker}>{inner}</div>
+                );
+              })}
+            </dl>
+
+            <div className="mt-12">
+              <p className="eyebrow mb-4">— Szolgáltatások</p>
+              <div className="flex flex-wrap gap-2">
+                {services.map((s) => (
+                  <Link
+                    key={s.slug}
+                    href={`/${s.slug}`}
+                    className="rounded-full border border-cream-300 px-5 py-2.5 text-sm text-ink-600 hover:border-ink-800/40 hover:text-ink-800 transition"
+                  >
+                    {s.name}
+                  </Link>
+                ))}
+              </div>
+            </div>
           </div>
 
-          <div className="grid md:grid-cols-2 gap-12 md:gap-16 items-start">
-            <div>
-              <Eyebrow>— Kapcsolat</Eyebrow>
-              <h1 className="h-page mt-4">
-                Beszéljünk.<br />
-                <span className="italic text-copper-600">Egyszerűen.</span>
-              </h1>
-              <p className="lead mt-6 max-w-md">
-                Akár esküvő, sport, esemény vagy valami egészen más. Írj, és 24 órán
-                belül válaszolok.
-              </p>
-
-              <div className="mt-10 space-y-3 border-y border-cream-300 divide-y divide-cream-300">
-                {contactRows.map((row) => {
-                  const Icon = row.icon;
-                  const inner = (
-                    <div className="flex items-center gap-4 py-4 group">
-                      <span className="h-10 w-10 rounded-full border border-cream-300 flex items-center justify-center text-ink-600 group-hover:bg-cream-200 transition">
-                        <Icon className="h-4 w-4" />
-                      </span>
-                      <span className="flex-1">
-                        <p className="brand-chip">{row.kicker}</p>
-                        <p className="text-ink-800 mt-0.5">{row.value}</p>
-                      </span>
-                      {row.href && <span className="text-copper-600">→</span>}
-                    </div>
-                  );
-                  return row.href ? (
-                    <a key={row.kicker} href={row.href} className="block">{inner}</a>
-                  ) : (
-                    <div key={row.kicker}>{inner}</div>
-                  );
-                })}
-              </div>
-
-              {sideImage && (
-                <div className="mt-12 hidden md:block">
-                  <Frame className="aspect-[4/3] w-full p-2">
-                    <div className="absolute inset-2 overflow-hidden">
-                      <Image src={sideImage} alt="Szombathely" fill sizes="40vw" className="object-cover" />
-                    </div>
-                  </Frame>
-                </div>
-              )}
-            </div>
-
-            <div className="md:sticky md:top-32">
+          <div className="lg:col-span-6 xl:col-span-7">
+            <div className="lg:sticky lg:top-28">
               <ContactForm />
             </div>
           </div>

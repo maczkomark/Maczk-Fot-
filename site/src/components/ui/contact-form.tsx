@@ -83,7 +83,7 @@ export const ContactForm = () => {
   return (
     <form
       onSubmit={onSubmit}
-      className={cn("w-full max-w-md mx-auto p-8 md:p-10 rounded-sm bg-cream-50 border border-cream-300")}
+      className={cn("w-full p-8 md:p-12 bg-cream-50 border border-cream-300")}
     >
       {/* Hidden: honeypot + időbélyeg */}
       <input

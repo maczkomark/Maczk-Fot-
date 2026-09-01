@@ -1,273 +1,256 @@
-import { BentoGrid, BentoGridItem } from "@/components/ui/bento-grid";
-import { AppleCardsCarousel } from "@/components/ui/apple-cards-carousel";
-import { InfiniteMovingImages } from "@/components/ui/infinite-moving-images";
-import { Section, Eyebrow } from "@/components/ui/section";
-import { Button } from "@/components/ui/button";
-import { Frame } from "@/components/ui/frame";
-import { albums, getMarqueePhotos } from "@/lib/albums";
-import { categoryIcon } from "@/lib/albums.config";
 import Image from "next/image";
 import Link from "next/link";
-import {
-  Camera, Trophy, Building2, Music, Heart, UtensilsCrossed, Bird, Calendar, Image as ImageIcon,
-} from "lucide-react";
-import fs from "node:fs";
-import path from "node:path";
-
-function iconFor(cat: string) {
-  const k = categoryIcon[cat] ?? "image";
-  const cls = "h-3.5 w-3.5";
-  switch (k) {
-    case "heart": return <Heart className={cls} />;
-    case "trophy": return <Trophy className={cls} />;
-    case "calendar": return <Calendar className={cls} />;
-    case "music": return <Music className={cls} />;
-    case "camera": return <Camera className={cls} />;
-    case "building": return <Building2 className={cls} />;
-    case "bird": return <Bird className={cls} />;
-    case "utensils": return <UtensilsCrossed className={cls} />;
-    default: return <ImageIcon className={cls} />;
-  }
-}
-
-const hasLogo = fs.existsSync(path.join(process.cwd(), "public", "brand", "logo.png"));
-const hasCover = fs.existsSync(path.join(process.cwd(), "public", "brand", "cover.png"));
-
-const services = [
-  { n: "01", title: "Esküvő", desc: "Teljes nap dokumentálása" },
-  { n: "02", title: "Portré", desc: "Egyéni, párkapcsolati, családi" },
-  { n: "03", title: "Esemény", desc: "Rendezvény, ballagás, céges" },
-  { n: "04", title: "Videó", desc: "Mozgókép, reels, kisfilm" },
-];
+import { ArrowRight, Camera, Clock, MapPin } from "lucide-react";
+import { Hero } from "@/components/site/hero";
+import { JsonLd } from "@/components/site/jsonld";
+import { Section, SectionHeader, GUTTER } from "@/components/ui/section";
+import { albums, getAlbum } from "@/lib/albums";
+import { services, site, gear } from "@/lib/site";
+import { breadcrumbLd } from "@/lib/seo";
 
 export default function Home() {
-  const featured = albums.slice(0, 7);
-  const carousel = albums.map((a) => ({
-    category: a.category,
-    title: a.title,
-    src: a.cover,
-    href: `/portfolio/${a.slug}`,
-  }));
-  const marquee = getMarqueePhotos();
   const totalImages = albums.reduce((s, a) => s + a.count, 0);
+  const featured = albums.slice(0, 8);
+
+  const serviceCards = services.map((s) => {
+    const album = getAlbum(s.heroAlbum) ?? albums.find((a) => s.categories.includes(a.category));
+    return { ...s, cover: album?.cover ?? albums[0]?.cover ?? "" };
+  });
 
   return (
-    <main className="overflow-x-hidden">
-      {/* ───── HERO — poster-style ───── */}
-      <section className="relative pt-28 md:pt-32 pb-20 md:pb-24 px-6 md:px-12">
-        <div className="max-w-6xl mx-auto">
-          <Frame className="px-6 md:px-12 lg:px-20 py-12 md:py-20">
-            {/* Top meta row */}
-            <div className="flex items-center justify-between mb-12 md:mb-20">
-              <span className="brand-chip">Maczkó Fotó · EST · 2026</span>
-              <span className="brand-chip hidden sm:inline">F/2.8 — ISO 400</span>
-            </div>
+    <main>
+      <JsonLd data={breadcrumbLd([{ name: "Főoldal", path: "/" }])} />
 
-            {/* Sub-eyebrow with em-dash */}
-            <p className="brand-chip mb-6 md:mb-8">— maczkofoto.hu / a pillanat</p>
+      <Hero />
 
-            {/* Small italic intro */}
-            <p className="font-display italic text-xl md:text-2xl text-copper-600 mb-4 md:mb-6">
-              a pillanat,
-            </p>
+      {/* ───────── Szolgáltatások ───────── */}
+      <Section id="szolgaltatasok" className="pt-20 md:pt-28 pb-0">
+        <SectionHeader
+          kicker="— Amit csinálok"
+          title={
+            <>
+              Négy műfaj, egy <span className="italic text-copper-600">fotós.</span>
+            </>
+          }
+          description="Mindegyikhez más kell: máshogy kell mozogni egy szertartáson, mint egy koncerten. Válaszd ki, ami téged érdekel."
+        />
+      </Section>
 
-            {/* Hero wordmark / logo */}
-            {hasLogo ? (
-              <div className="my-2 md:my-4">
+      <div className={`${GUTTER} max-w-[120rem] mx-auto pb-20 md:pb-28`}>
+        <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+          {serviceCards.map((s, i) => (
+            <Link
+              key={s.slug}
+              href={`/${s.slug}`}
+              className={`group relative overflow-hidden bg-ink-950 ${
+                i === 0 ? "sm:col-span-2 lg:row-span-2 aspect-[4/3] lg:aspect-auto lg:min-h-[36rem]" : "aspect-[4/3]"
+              }`}
+            >
+              <Image
+                src={s.cover}
+                alt={`${s.name} fotózás — Maczkó Fotó`}
+                fill
+                sizes={i === 0 ? "(max-width: 1024px) 100vw, 66vw" : "(max-width: 640px) 100vw, 33vw"}
+                className="object-cover opacity-85 transition duration-700 group-hover:opacity-100 group-hover:scale-[1.03]"
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-ink-950/90 via-ink-950/20 to-transparent" />
+              <div className="absolute inset-x-0 bottom-0 p-6 md:p-8">
+                <h3
+                  className={`font-display text-white tracking-tight ${
+                    i === 0 ? "text-3xl md:text-5xl" : "text-2xl md:text-3xl"
+                  }`}
+                >
+                  {s.name}
+                </h3>
+                <p className="mt-2 text-white/70 text-sm md:text-base max-w-sm">{s.short}</p>
+                <span className="mt-4 inline-flex items-center gap-2 text-sm text-copper-400">
+                  Részletek
+                  <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
+                </span>
+              </div>
+            </Link>
+          ))}
+        </div>
+      </div>
+
+      {/* ───────── Rólam sáv ───────── */}
+      <section id="rolam" className="bg-ink-950 text-cream-100">
+        <div className={`${GUTTER} max-w-[120rem] mx-auto py-20 md:py-28`}>
+          <div className="grid gap-12 lg:grid-cols-12 lg:gap-16 items-center">
+            <div className="lg:col-span-5 xl:col-span-4">
+              <div className="relative aspect-[3/4] max-w-md">
                 <Image
-                  src="/brand/logo.png"
-                  alt="Maczkó Fotó"
-                  width={900}
-                  height={300}
-                  priority
-                  className="w-full max-w-3xl h-auto"
+                  src="/brand/mark-portrait.webp"
+                  alt="Maczkó Márk fotós, Szombathely"
+                  fill
+                  sizes="(max-width: 1024px) 100vw, 33vw"
+                  className="object-cover"
                 />
               </div>
-            ) : (
-              <h1 className="font-display text-ink-800 leading-[0.85] tracking-tight">
-                <span className="block text-[clamp(4rem,16vw,11rem)]">Maczkó</span>
-                <span className="block italic text-copper-600 text-[clamp(4rem,16vw,11rem)] -mt-2 md:-mt-4">Fotó</span>
-              </h1>
-            )}
+            </div>
 
-            {/* Tagline */}
-            <p className="lead mt-10 md:mt-12 max-w-xl">
-              Új weboldal készül. Esküvő, portré, esemény, családi pillanatok —
-              egy fotós, sok történet.
-            </p>
-
-            {/* Services list */}
-            <div className="mt-12 md:mt-16">
-              <div className="flex items-center gap-4 mb-6">
-                <span className="hr-dash flex-1" />
-                <span className="brand-chip">Szolgáltatások</span>
-                <span className="hr-dash flex-1" />
+            <div className="lg:col-span-7 xl:col-span-8">
+              <p className="text-[0.7rem] uppercase tracking-[0.3em] text-cream-100/40">— Rólam</p>
+              <h2 className="font-display text-cream-100 leading-[0.95] tracking-tight text-[clamp(2rem,4.5vw,3.75rem)] mt-5">
+                Maczkó Márk vagyok,
+                <br />
+                <span className="italic text-copper-400">fotós Szombathelyen.</span>
+              </h2>
+              <div className="mt-8 space-y-5 text-lg text-cream-100/70 leading-relaxed max-w-2xl">
+                <p>
+                  Esküvőket, rendezvényeket, bulikat és sportot fotózok. Ami közös bennük:
+                  egyszer történnek meg. Nincs újrafelvétel, nincs második kísérlet — vagy
+                  ott vagyok a jó helyen, vagy elment a pillanat.
+                </p>
+                <p>
+                  Sony A7 V vázzal és 24-70mm f/2.8 G Master objektívvel dolgozom, külső
+                  vakukkal. Ez az a felszerelés, amivel egy sötét klubban és egy déli
+                  napsütésben is használható kép készül. Minden fontos pillanat két
+                  memóriakártyára íródik egyszerre.
+                </p>
               </div>
-              <ul className="divide-y divide-cream-300 border-y border-cream-300">
-                {services.map((s) => (
-                  <li key={s.n} className="flex items-center justify-between py-4 md:py-5">
-                    <div className="flex items-baseline gap-4 md:gap-6">
-                      <span className="stamp w-10 shrink-0">{s.n}</span>
-                      <span className="font-display text-2xl md:text-3xl text-ink-800 tracking-tight">{s.title}</span>
-                    </div>
-                    <span className="brand-chip text-right">{s.desc}</span>
-                  </li>
-                ))}
-              </ul>
-            </div>
 
-            {/* Pull quote */}
-            <div className="mt-16 md:mt-20 text-center max-w-2xl mx-auto">
-              <div className="flex items-center justify-center gap-4 mb-6">
-                <span className="hr-dash w-12" />
-                <span className="text-copper-600">◆</span>
-                <span className="hr-dash w-12" />
+              <div className="mt-10 grid grid-cols-2 sm:grid-cols-4 gap-6 max-w-2xl">
+                <div>
+                  <p className="font-display text-3xl md:text-4xl text-copper-400">{albums.length}</p>
+                  <p className="text-sm text-cream-100/50 mt-1">galéria</p>
+                </div>
+                <div>
+                  <p className="font-display text-3xl md:text-4xl text-copper-400">
+                    {totalImages.toLocaleString("hu-HU")}
+                  </p>
+                  <p className="text-sm text-cream-100/50 mt-1">kiadott kép</p>
+                </div>
+                <div>
+                  <p className="font-display text-3xl md:text-4xl text-copper-400">24ó</p>
+                  <p className="text-sm text-cream-100/50 mt-1">válaszidő</p>
+                </div>
+                <div>
+                  <p className="font-display text-3xl md:text-4xl text-copper-400">2</p>
+                  <p className="text-sm text-cream-100/50 mt-1">váz a helyszínen</p>
+                </div>
               </div>
-              <p className="font-display italic text-xl md:text-2xl text-ink-800 leading-relaxed">
-                „Egy fotó nem csak <span className="text-copper-600">kép</span> —
-                <br className="hidden md:block" /> egy emlék, amit örökre megtarthatsz."
-              </p>
-            </div>
 
-            {/* CTAs */}
-            <div className="mt-12 md:mt-16 flex flex-wrap justify-center gap-3">
-              <Button href="/portfolio">Munkáim megtekintése →</Button>
-              <Button href="/contact" variant="secondary">Felkérés</Button>
+              <Link
+                href="/about"
+                className="mt-10 inline-flex items-center gap-2 rounded-full border border-cream-100/25 px-7 py-3.5 text-sm font-medium text-cream-100 hover:bg-cream-100/10 transition"
+              >
+                Bővebben rólam
+                <ArrowRight className="h-4 w-4" />
+              </Link>
             </div>
-          </Frame>
+          </div>
         </div>
       </section>
 
-      {/* ───── COVER BAND — Facebook cover if present ───── */}
-      {hasCover && (
-        <section className="px-6 md:px-12 mb-20 md:mb-24">
-          <div className="max-w-6xl mx-auto">
-            <Image
-              src="/brand/cover.png"
-              alt="Maczkó Fotó — boríték"
-              width={2400}
-              height={900}
-              className="w-full h-auto rounded-sm"
-            />
-          </div>
-        </section>
-      )}
+      {/* ───────── Kiemelt munkák ───────── */}
+      <Section id="munkaim" className="pb-0">
+        <SectionHeader
+          kicker="— Munkáim"
+          title={
+            <>
+              Friss <span className="italic text-copper-600">galériák.</span>
+            </>
+          }
+          description={`${albums.length} sorozat, ${totalImages.toLocaleString("hu-HU")} kép az elmúlt hónapokból.`}
+        />
+      </Section>
 
-      {/* ───── MARQUEE — recent works ───── */}
-      <section className="py-10 md:py-14 border-y border-cream-300 bg-cream-50/70">
-        <div className="px-6 md:px-12 max-w-7xl mx-auto mb-6">
-          <div className="flex items-center justify-center gap-4">
-            <span className="hr-dash w-16" />
-            <span className="brand-chip">Legutóbbi munkák</span>
-            <span className="hr-dash w-16" />
+      <div className={`${GUTTER} max-w-[120rem] mx-auto pb-20 md:pb-28`}>
+        <div className="grid gap-3 grid-cols-2 lg:grid-cols-4">
+          {featured.map((a, i) => (
+            <Link
+              key={a.slug}
+              href={`/portfolio/${a.slug}`}
+              className={`group relative overflow-hidden bg-ink-950 ${
+                i === 0 || i === 5 ? "col-span-2 aspect-[4/3]" : "aspect-[3/4]"
+              }`}
+            >
+              <Image
+                src={a.cover}
+                alt={`${a.title} — ${a.category.toLowerCase()} fotózás`}
+                fill
+                sizes="(max-width: 640px) 50vw, 25vw"
+                className="object-cover transition duration-700 group-hover:scale-[1.04]"
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-ink-950/85 via-transparent to-transparent opacity-90" />
+              <div className="absolute inset-x-0 bottom-0 p-4 md:p-6">
+                <p className="text-[0.65rem] uppercase tracking-[0.25em] text-white/60">{a.category}</p>
+                <h3 className="font-display text-lg md:text-2xl text-white mt-1.5 leading-tight">{a.title}</h3>
+              </div>
+            </Link>
+          ))}
+        </div>
+
+        <div className="mt-10 flex justify-center">
+          <Link
+            href="/portfolio"
+            className="inline-flex items-center gap-2 rounded-full border border-ink-800/25 px-7 py-3.5 text-sm font-medium text-ink-800 hover:bg-ink-800/5 transition"
+          >
+            Mind az {albums.length} galéria
+            <ArrowRight className="h-4 w-4" />
+          </Link>
+        </div>
+      </div>
+
+      {/* ───────── Hogyan dolgozom ───────── */}
+      <section id="hogyan" className="border-y border-cream-300 bg-cream-50">
+        <div className={`${GUTTER} max-w-[120rem] mx-auto py-20 md:py-28`}>
+          <div className="grid gap-10 md:grid-cols-3">
+            {[
+              {
+                icon: MapPin,
+                title: "Szombathely és a vármegye",
+                body: "Itt élek, ismerem a helyszíneket. Vas vármegyén belül nincs kiszállási díj, azon kívül megegyezés szerint.",
+              },
+              {
+                icon: Clock,
+                title: "Kiszámítható átfutás",
+                body: `Írásra ${site.responseTime} válaszolok. Rendezvény után egy hét, esküvő után négy hét a teljes anyag — ha gyorsabb kell, azt előre megbeszéljük.`,
+              },
+              {
+                icon: Camera,
+                title: "Profi felszerelés",
+                body: gear.map((g) => g.name).slice(0, 3).join(", ") + ". Tartalék vázzal és kettőzött kártyaírással.",
+              },
+            ].map((f) => (
+              <div key={f.title}>
+                <span className="h-11 w-11 rounded-full border border-cream-300 flex items-center justify-center text-copper-600">
+                  <f.icon className="h-5 w-5" />
+                </span>
+                <h3 className="font-display text-2xl text-ink-800 mt-5 tracking-tight">{f.title}</h3>
+                <p className="body mt-3">{f.body}</p>
+              </div>
+            ))}
           </div>
         </div>
-        <InfiniteMovingImages images={marquee} speed="slow" direction="left" />
       </section>
 
-      {/* ───── BENTO — kiemelt albumok ───── */}
-      <Section id="munkaim">
-        <div className="mb-12 md:mb-16 flex flex-col md:flex-row md:items-end md:justify-between gap-6">
-          <div>
-            <Eyebrow>— Munkáim</Eyebrow>
-            <h2 className="h-section mt-4">
-              Kiemelt <span className="italic text-copper-600">albumok.</span>
-            </h2>
-          </div>
-          <p className="md:max-w-md lead">
-            Egy szelet a friss munkákból — esküvő, sport, esemény és portré. Kattints
-            bármelyikre az album megnyitásához.
-          </p>
-        </div>
-
-        <BentoGrid>
-          <BentoGridItem
-            className="md:col-span-2 md:row-span-2 h-[28rem] md:h-auto"
-            title={featured[0].title}
-            description={featured[0].category}
-            icon={iconFor(featured[0].category)}
-            href={`/portfolio/${featured[0].slug}`}
-            header={
-              <Image src={featured[0].cover} alt={featured[0].title} fill sizes="(max-width: 768px) 100vw, 66vw" className="object-cover transition duration-700 group-hover:scale-105" />
-            }
-          />
-          {featured.slice(1, 4).map((a, i) => (
-            <BentoGridItem
-              key={a.slug}
-              className="h-72 md:h-auto"
-              title={a.title}
-              description={a.category}
-              icon={iconFor(a.category)}
-              href={`/portfolio/${a.slug}`}
-              header={
-                <Image src={a.cover} alt={a.title} fill sizes="(max-width: 768px) 100vw, 33vw" className="object-cover transition duration-700 group-hover:scale-105" />
-              }
-            />
-          ))}
-          {featured.slice(4, 6).map((a) => (
-            <BentoGridItem
-              key={a.slug}
-              className="md:col-span-2 h-72 md:h-auto"
-              title={a.title}
-              description={a.category}
-              icon={iconFor(a.category)}
-              href={`/portfolio/${a.slug}`}
-              header={
-                <Image src={a.cover} alt={a.title} fill sizes="(max-width: 768px) 100vw, 66vw" className="object-cover transition duration-700 group-hover:scale-105" />
-              }
-            />
-          ))}
-          {featured[6] && (
-            <BentoGridItem
-              className="h-72 md:h-auto"
-              title={featured[6].title}
-              description={featured[6].category}
-              icon={iconFor(featured[6].category)}
-              href={`/portfolio/${featured[6].slug}`}
-              header={
-                <Image src={featured[6].cover} alt={featured[6].title} fill sizes="(max-width: 768px) 100vw, 33vw" className="object-cover transition duration-700 group-hover:scale-105" />
-              }
-            />
-          )}
-        </BentoGrid>
-      </Section>
-
-      {/* ───── CAROUSEL — minden album ───── */}
-      <Section bare className="border-t border-cream-300">
-        <div className="px-6 md:px-12 max-w-7xl mx-auto mb-10">
-          <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-4">
-            <div>
-              <Eyebrow>— A teljes archívum</Eyebrow>
-              <h2 className="h-section mt-4">Minden <span className="italic text-copper-600">albumom.</span></h2>
-            </div>
-            <p className="md:max-w-md lead">
-              {albums.length} sorozat · {totalImages} kép. Görgess oldalra a felfedezéshez.
-            </p>
-          </div>
-        </div>
-        <AppleCardsCarousel cards={carousel} />
-      </Section>
-
-      {/* ───── CTA ───── */}
-      <Section className="border-t border-cream-300">
-        <div className="text-center max-w-3xl mx-auto">
-          <div className="flex items-center justify-center gap-4 mb-6">
-            <span className="hr-dash w-16" />
-            <span className="text-copper-600">◆</span>
-            <span className="hr-dash w-16" />
-          </div>
-          <Eyebrow>— Felkérés</Eyebrow>
-          <h2 className="h-section mt-4">
-            Van egy pillanat,<br />
-            <span className="italic text-copper-600">amit megőriznél?</span>
-          </h2>
-          <p className="lead mt-6 max-w-xl mx-auto">
-            Esküvő, portré, esemény vagy videó — szólj, és beszélgessünk arról, hogyan kelthetjük életre.
-          </p>
-          <div className="mt-10 flex justify-center gap-3 flex-wrap">
-            <Button href="/contact">Kapcsolat felvétele →</Button>
-            <Button href="/about" variant="secondary">Rólam</Button>
-          </div>
+      {/* ───────── CTA ───────── */}
+      <Section id="ajanlat" width="text" className="text-center">
+        <p className="eyebrow">— Felkérés</p>
+        <h2 className="h-section mt-4">
+          Van egy dátumod,
+          <br />
+          <span className="italic text-copper-600">ami nem ismételhető?</span>
+        </h2>
+        <p className="lead mt-6">
+          Írd meg, mikor és hol lesz, és mit szeretnél. {site.responseTime} válaszolok,
+          konkrét ajánlattal.
+        </p>
+        <div className="mt-10 flex justify-center gap-3 flex-wrap">
+          <Link
+            href="/contact"
+            className="rounded-full bg-ink-800 text-cream-50 px-7 py-3.5 text-sm font-medium hover:bg-ink-900 transition"
+          >
+            Ajánlatot kérek
+          </Link>
+          <a
+            href={site.phoneHref}
+            className="rounded-full border border-ink-800/25 px-7 py-3.5 text-sm font-medium text-ink-800 hover:bg-ink-800/5 transition"
+          >
+            {site.phone}
+          </a>
         </div>
       </Section>
     </main>

@@ -11,7 +11,7 @@ export const MasonryGallery = ({ images, title }: { images: string[]; title?: st
 
   return (
     <>
-      <div className="columns-1 sm:columns-2 lg:columns-3 gap-4">
+      <div className="columns-1 sm:columns-2 lg:columns-3 xl:columns-4 gap-3">
         {images.map((src, i) => (
           <button
             key={src}
@@ -20,7 +20,7 @@ export const MasonryGallery = ({ images, title }: { images: string[]; title?: st
               setOpen(true);
             }}
             className={cn(
-              "block w-full break-inside-avoid mb-4 group relative overflow-hidden rounded-sm border border-cream-300",
+              "block w-full break-inside-avoid mb-3 group relative overflow-hidden ",
               "focus:outline-none focus-visible:ring-2 focus-visible:ring-ink-800/30",
             )}
           >
@@ -29,7 +29,7 @@ export const MasonryGallery = ({ images, title }: { images: string[]; title?: st
               alt={title ? `${title} — ${i + 1}` : `Kép ${i + 1}`}
               width={1200}
               height={800}
-              sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+              sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
               className="w-full h-auto object-cover transition duration-700 group-hover:scale-[1.02] group-hover:brightness-110"
             />
             <div className="absolute inset-x-0 bottom-0 p-4 text-xs tabular-nums text-white/80 opacity-0 group-hover:opacity-100 transition duration-300 bg-gradient-to-t from-black/70 to-transparent uppercase tracking-[0.2em]">

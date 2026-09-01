@@ -14,6 +14,7 @@
 
 html,
 body {
+  overflow-x: clip;
   background: var(--bg);
   color: var(--ink-body);
   -webkit-font-smoothing: antialiased;
@@ -70,6 +71,11 @@ body {
 
 /* ───────────── DESIGN TOKENS — typography & utility classes ───────────── */
 @layer components {
+  /* Kép fölé kerülő szöveg — finom árnyék, hogy világos képrészleten is olvasható legyen */
+  .on-image {
+    text-shadow: 0 1px 3px rgb(0 0 0 / 0.55), 0 6px 24px rgb(0 0 0 / 0.35);
+  }
+
   /* Over-image overlays — white text on dark gradient */
   .on-image-eyebrow {
     @apply text-xs uppercase tracking-[0.3em] text-white/70;

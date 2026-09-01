@@ -1,38 +1,48 @@
 import { cn } from "@/lib/utils";
 import React from "react";
 
-const SECTION_X = "px-6 md:px-12";
-const SECTION_Y = "py-24 md:py-32";
-const PAGE_HERO_Y = "pt-32 md:pt-40 pb-16 md:pb-24";
-const CONTAINER = "max-w-7xl mx-auto";
+/**
+ * Vízszintes margó. Nagy képernyőn is csak ennyit hagyunk a szélén — a tartalom
+ * kihasználja a képernyőt, nem szorul egy keskeny sávba középre.
+ */
+export const GUTTER = "px-5 sm:px-8 lg:px-14 2xl:px-20";
+
+/** Szövegblokkokhoz: olvasható sorhossz, de nem a teljes oldal szélessége. */
+export const PROSE = "max-w-3xl";
+
+type Width = "full" | "wide" | "text";
+
+const widths: Record<Width, string> = {
+  /** Széltől szélig, csak a gutter marad. Képrácsokhoz. */
+  full: "",
+  /** Nagyon széles, de nagyon nagy monitoron sem lesz végtelen. */
+  wide: "max-w-[120rem] mx-auto",
+  /** Olvasható szövegoszlop. */
+  text: "max-w-3xl",
+};
 
 export const Section = ({
   id,
   className,
   containerClassName,
+  width = "wide",
   bare = false,
   children,
 }: {
   id?: string;
   className?: string;
   containerClassName?: string;
+  width?: Width;
+  /** Ha true, nincs gutter és nincs konténer — a gyerek intézi a szélességet. */
   bare?: boolean;
   children: React.ReactNode;
 }) => (
-  <section id={id} className={cn(SECTION_Y, className)}>
-    {bare ? children : <div className={cn(SECTION_X, CONTAINER, containerClassName)}>{children}</div>}
-  </section>
-);
-
-export const PageHero = ({
-  className,
-  children,
-}: {
-  className?: string;
-  children: React.ReactNode;
-}) => (
-  <section className={cn(PAGE_HERO_Y, SECTION_X, className)}>
-    <div className={CONTAINER}>{children}</div>
+  <section id={id} className={cn("py-20 md:py-28", className)}>
+    {bare ? (
+      children
+    ) : (
+      <div className={cn(GUTTER, widths[width], containerClassName)}>{children}</div>
+    )}
   </section>
 );
 
@@ -56,15 +66,7 @@ export const SectionHeader = ({
   className?: string;
 }) => {
   const titleEl = (
-    <h2
-      className={cn(
-        "h-section",
-        kicker ? "mt-4" : undefined,
-        titleClassName,
-      )}
-    >
-      {title}
-    </h2>
+    <h2 className={cn("h-section", kicker ? "mt-4" : undefined, titleClassName)}>{title}</h2>
   );
 
   if (align === "center") {
@@ -88,12 +90,17 @@ export const SectionHeader = ({
   }
 
   return (
-    <div className={cn("mb-12 md:mb-16 flex flex-col md:flex-row md:items-end md:justify-between gap-6", className)}>
-      <div>
+    <div
+      className={cn(
+        "mb-12 md:mb-16 flex flex-col md:flex-row md:items-end md:justify-between gap-6",
+        className,
+      )}
+    >
+      <div className="max-w-2xl">
         {kicker && <Eyebrow>{kicker}</Eyebrow>}
         {titleEl}
       </div>
-      {description && <p className="md:max-w-md lead">{description}</p>}
+      {description && <p className="md:max-w-sm lead">{description}</p>}
     </div>
   );
 };

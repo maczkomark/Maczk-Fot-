@@ -1,15 +1,18 @@
 import Link from "next/link";
-import { Eyebrow, PageHero, Section } from "@/components/ui/section";
 import { albums } from "@/lib/albums";
+import { GUTTER } from "@/components/ui/section";
+import { pageMeta } from "@/lib/seo";
+import { services } from "@/lib/site";
 
-export const metadata = {
+export const metadata = pageMeta({
   title: "Oldaltérkép — Maczkó Fotó",
-  description: "Az oldal összes elérhető oldala egy helyen.",
-};
+  description: "Az oldal összes elérhető oldala és galériája egy helyen.",
+  path: "/sitemap",
+});
 
 const mainPages = [
-  { href: "/", label: "Kezdőlap" },
-  { href: "/portfolio", label: "Portfólió" },
+  { href: "/", label: "Főoldal" },
+  { href: "/portfolio", label: "Munkáim" },
   { href: "/about", label: "Rólam" },
   { href: "/contact", label: "Kapcsolat" },
 ];
@@ -21,84 +24,61 @@ export default function SitemapPage() {
     list.push(a);
     byCategory.set(a.category, list);
   }
-  const categories = Array.from(byCategory.entries()).sort(([a], [b]) =>
-    a.localeCompare(b, "hu")
-  );
+  const categories = Array.from(byCategory.entries()).sort(([a], [b]) => a.localeCompare(b, "hu"));
 
   return (
-    <main className="min-h-screen">
-      <PageHero>
-        <div className="flex items-center justify-between mb-10">
-          <span className="brand-chip">— Maczkó Fotó / Oldaltérkép</span>
-          <span className="brand-chip hidden sm:inline">{albums.length} album</span>
+    <main className={`${GUTTER} max-w-[120rem] mx-auto pt-28 md:pt-40 pb-24`}>
+      <p className="eyebrow">— Oldaltérkép</p>
+      <h1 className="font-display text-ink-800 leading-[0.9] tracking-tight text-[clamp(2.25rem,6vw,4.5rem)] mt-5">
+        Minden oldal <span className="italic text-copper-600">egy helyen.</span>
+      </h1>
+
+      <div className="mt-16 grid gap-12 md:grid-cols-2">
+        <div>
+          <h2 className="eyebrow mb-5">Oldalak</h2>
+          <ul className="space-y-2">
+            {mainPages.map((p) => (
+              <li key={p.href}>
+                <Link href={p.href} className="body hover:text-ink-800 transition">
+                  {p.label}
+                </Link>
+              </li>
+            ))}
+          </ul>
         </div>
-        <Eyebrow>— Oldaltérkép</Eyebrow>
-        <h1 className="h-page mt-4">
-          Minden, ami <span className="italic text-copper-600">megtalálható.</span>
-        </h1>
-        <p className="lead mt-6 max-w-xl">
-          Az oldal összes nyilvános oldala egy helyen, kategória szerint csoportosítva.
-        </p>
-      </PageHero>
+        <div>
+          <h2 className="eyebrow mb-5">Szolgáltatások</h2>
+          <ul className="space-y-2">
+            {services.map((s) => (
+              <li key={s.slug}>
+                <Link href={`/${s.slug}`} className="body hover:text-ink-800 transition">
+                  {s.heading}
+                </Link>
+              </li>
+            ))}
+          </ul>
+        </div>
+      </div>
 
-      <Section className="border-t border-cream-300 pt-16 md:pt-20">
-        <Eyebrow>— Főbb oldalak</Eyebrow>
-        <h2 className="h-section mt-4">Navigáció.</h2>
-        <ul className="mt-10 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-3">
-          {mainPages.map((p) => (
-            <li key={p.href}>
-              <Link
-                href={p.href}
-                className="block px-5 py-4 border border-cream-300 hover:border-copper-600 hover:text-copper-600 transition-colors font-display text-lg"
-              >
-                {p.label}
-              </Link>
-            </li>
-          ))}
-        </ul>
-      </Section>
-
-      <Section className="border-t border-cream-300">
-        <Eyebrow>— Albumok</Eyebrow>
-        <h2 className="h-section mt-4">
-          Portfólió <span className="italic text-copper-600">kategóriánként.</span>
-        </h2>
-        <p className="lead mt-6 max-w-xl">
-          Összesen {albums.length} album · {albums.reduce((s, a) => s + a.count, 0)} kép.
-        </p>
-
-        <div className="mt-12 space-y-12">
+      <div className="mt-16">
+        <h2 className="eyebrow mb-8">Galériák ({albums.length})</h2>
+        <div className="grid gap-10 sm:grid-cols-2 lg:grid-cols-3">
           {categories.map(([cat, list]) => (
             <div key={cat}>
-              <p className="on-image-eyebrow text-ink-800">{cat}</p>
-              <ul className="mt-4 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-x-8 gap-y-2 border-t border-cream-300 pt-4">
+              <h3 className="font-display text-2xl text-ink-800 tracking-tight mb-4">{cat}</h3>
+              <ul className="space-y-2">
                 {list.map((a) => (
-                  <li key={a.slug} className="flex items-baseline justify-between gap-4">
-                    <Link
-                      href={`/portfolio/${a.slug}`}
-                      className="font-display text-base hover:text-copper-600 transition-colors"
-                    >
+                  <li key={a.slug}>
+                    <Link href={`/portfolio/${a.slug}`} className="body hover:text-ink-800 transition">
                       {a.title}
                     </Link>
-                    <span className="caption shrink-0">{a.count} kép</span>
                   </li>
                 ))}
               </ul>
             </div>
           ))}
         </div>
-      </Section>
-
-      <Section className="border-t border-cream-300">
-        <Eyebrow>— Gépeknek</Eyebrow>
-        <h2 className="h-section mt-4">XML sitemap.</h2>
-        <p className="lead mt-6 max-w-xl">
-          A keresőknek szóló sitemap itt érhető el:{" "}
-          <a href="/sitemap.xml" className="underline hover:text-copper-600">
-            /sitemap.xml
-          </a>
-        </p>
-      </Section>
+      </div>
     </main>
   );
 }
