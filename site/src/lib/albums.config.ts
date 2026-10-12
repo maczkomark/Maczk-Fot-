@@ -58,8 +58,8 @@ export const albumMeta: Record<string, AlbumMeta> = {
     date: "2026.10.03",
     description:
       "Polgári szertartás gyűrűcserével és homokceremóniával, utána koccintás és családi képek a teraszon.",
-    featured: 19,
-    highlights: [19, 25, 44, 18],
+    featured: 43,
+    highlights: [43, 19, 25, 18],
   },
   // A kőszegi páros fotózás egyelőre nincs kint az oldalon. A képek megvannak
   // a portfolio/kőszeg mappában — a hidden törlésével bármikor visszakerül.
