@@ -52,6 +52,15 @@ export const albumMeta: Record<string, AlbumMeta> = {
     featured: 13,
     highlights: [13, 9, 11, 6],
   },
+  "evelin-attila": {
+    title: "Evelin és Attila esküvője",
+    category: "Esküvő",
+    date: "2026.10.03",
+    description:
+      "Polgári szertartás gyűrűcserével és homokceremóniával, utána koccintás és családi képek a teraszon.",
+    featured: 19,
+    highlights: [19, 25, 44, 18],
+  },
   // A kőszegi páros fotózás egyelőre nincs kint az oldalon. A képek megvannak
   // a portfolio/kőszeg mappában — a hidden törlésével bármikor visszakerül.
   koszeg: {
@@ -225,6 +234,15 @@ export const albumMeta: Record<string, AlbumMeta> = {
     location: "Maxxx Club, Szombathely",
     description: "Szombat esti buli a Maxxx Clubban.",
     highlights: [83, 28, 137],
+  },
+  "all-in-x-birthday": {
+    title: "All In X Birthday",
+    category: "Koncert",
+    date: "2026.10.01",
+    location: "Maxxx Club, Szombathely",
+    description: "Születésnapi buli a Maxxx Clubban, a DJ-pult körül és a táncparketten.",
+    featured: 12,
+    highlights: [12, 74, 31],
   },
 
   // ───── Esemény ─────
@@ -531,11 +549,13 @@ export const albumMeta: Record<string, AlbumMeta> = {
 export const manualOrder: string[] = [
   "eskuvo",
   "eszter-milan",
+  "evelin-attila",
   "falco-donto",
   "xxv-felvonulas",
   "vep-david-kornel-divatbemunto",
   "szentivanej",
   "karneval-beton-hofi",
+  "all-in-x-birthday",
   "petofi-telep-utcabal",
   "streetball",
   "a-300-meccs-haladas-vs-us-lecce",
