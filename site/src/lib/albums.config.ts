@@ -90,6 +90,7 @@ export const albumMeta: Record<string, AlbumMeta> = {
     location: "Aréna Savaria, Szombathely",
     description:
       "A magyar kosárlabda-bajnokság döntője, a mérkőzéssel és a lelátói hangulattal.",
+    featured: 13,
     highlights: [19, 25, 13],
   },
   "a-300-meccs-haladas-vs-us-lecce": {

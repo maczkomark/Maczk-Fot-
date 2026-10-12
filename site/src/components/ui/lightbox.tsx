@@ -93,16 +93,19 @@ export const Lightbox = ({
             initial={{ opacity: 0, x: 30 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.25 }}
-            className="relative max-h-[90vh] max-w-[92vw] aspect-[3/2]"
             onClick={(e) => e.stopPropagation()}
           >
+            {/* A kép a saját arányát tartja, a képernyőhöz igazítva. `fill` itt nem
+                jó: az abszolút pozíciójú kép nem ad méretet a tartónak, ami így
+                0×0 px-re zsugorodik, és csak a fekete háttér látszik. */}
             <Image
               src={images[i].src}
               alt={images[i].alt}
-              fill
+              width={2000}
+              height={1333}
               priority
               sizes="92vw"
-              className="object-contain"
+              className="block w-auto h-auto max-h-[90vh] max-w-[92vw]"
             />
           </motion.div>
         </motion.div>
